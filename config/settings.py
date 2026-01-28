@@ -230,6 +230,8 @@ CONTENT_SECURITY_POLICY = {
 
 
 # ========== LOGGING CONFIGURATION ==========
+# Configuración simplificada para Render (solo consola)
+# Render no permite escritura persistente en disco, por lo que eliminamos FileHandler
 
 LOGGING = {
     'version': 1,
@@ -239,18 +241,6 @@ LOGGING = {
             'format': '{levelname} {asctime} {module} {message}',
             'style': '{',
         },
-        'simple': {
-            'format': '{levelname} {message}',
-            'style': '{',
-        },
-    },
-    'filters': {
-        'require_debug_false': {
-            '()': 'django.utils.log.RequireDebugFalse',
-        },
-        'require_debug_true': {
-            '()': 'django.utils.log.RequireDebugTrue',
-        },
     },
     'handlers': {
         'console': {
@@ -258,43 +248,35 @@ LOGGING = {
             'class': 'logging.StreamHandler',
             'formatter': 'verbose',
         },
-        'file': {
-            'level': 'ERROR',
-            'class': 'logging.handlers.RotatingFileHandler',
-            'filename': BASE_DIR / 'logs' / 'django.log',
-            'maxBytes': 1024 * 1024 * 5,  # 5 MB
-            'backupCount': 5,
-            'formatter': 'verbose',
-        },
     },
     'loggers': {
         'django': {
-            'handlers': ['console', 'file'],
+            'handlers': ['console'],
             'level': 'INFO',
             'propagate': False,
         },
         'django.request': {
-            'handlers': ['console', 'file'],
+            'handlers': ['console'],
             'level': 'ERROR',
             'propagate': False,
         },
         'bookings': {
-            'handlers': ['console', 'file'],
+            'handlers': ['console'],
             'level': 'INFO',
             'propagate': False,
         },
         'accounts': {
-            'handlers': ['console', 'file'],
+            'handlers': ['console'],
             'level': 'INFO',
             'propagate': False,
         },
         'services': {
-            'handlers': ['console', 'file'],
+            'handlers': ['console'],
             'level': 'INFO',
             'propagate': False,
         },
         'dashboard': {
-            'handlers': ['console', 'file'],
+            'handlers': ['console'],
             'level': 'INFO',
             'propagate': False,
         },
