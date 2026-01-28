@@ -1,0 +1,871 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard Administrativo{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* ===================================
+       DASHBOARD SaaS - DISEÑO PREMIUM
+       Estilo: Panel de control moderno
+       Enfoque: Claridad, datos, confianza
+       ================================ */
+    
+    /* Contenedor principal */
+    .dashboard-page {
+        min-height: calc(100vh - 200px);
+        padding: var(--space-6) var(--space-4);
+        background: #f8f9fa;
+    }
+    
+    .dashboard-container {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+    
+    /* Header del Dashboard */
+    .dashboard-header {
+        margin-bottom: var(--space-7);
+    }
+    
+    .dashboard-header__title {
+        font-family: var(--font-heading);
+        font-size: clamp(1.75rem, 4vw, 2.25rem);
+        font-weight: 700;
+        color: var(--color-text);
+        margin-bottom: var(--space-2);
+    }
+    
+    .dashboard-header__subtitle {
+        font-size: 1rem;
+        color: var(--color-text-muted);
+    }
+    
+    /* Navegación Dashboard */
+    .dashboard-nav {
+        display: flex;
+        gap: var(--space-2);
+        margin-bottom: var(--space-7);
+        overflow-x: auto;
+        padding-bottom: var(--space-2);
+    }
+    
+    .dashboard-nav__link {
+        padding: var(--space-3) var(--space-5);
+        border-radius: var(--radius-lg);
+        font-weight: 600;
+        font-size: 0.9375rem;
+        color: var(--color-text-muted);
+        text-decoration: none;
+        white-space: nowrap;
+        transition: all var(--transition-base);
+        border: 2px solid transparent;
+    }
+    
+    .dashboard-nav__link:hover {
+        color: var(--color-primary);
+        background: rgba(44, 95, 93, 0.05);
+    }
+    
+    .dashboard-nav__link--active {
+        color: var(--color-primary);
+        background: rgba(44, 95, 93, 0.08);
+        border-color: var(--color-primary);
+    }
+    
+    /* Grid de Métricas Principales */
+    .metrics-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: var(--space-4);
+        margin-bottom: var(--space-7);
+    }
+    
+    @media (min-width: 640px) {
+        .metrics-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+    
+    @media (min-width: 1024px) {
+        .metrics-grid {
+            grid-template-columns: repeat(4, 1fr);
+        }
+    }
+    
+    /* Metric Card (KPI Card) */
+    .metric-card {
+        background: white;
+        border-radius: var(--radius-lg);
+        padding: var(--space-5);
+        border: 1px solid var(--color-border);
+        transition: all var(--transition-smooth);
+    }
+    
+    .metric-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-lg);
+    }
+    
+    .metric-card__header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: var(--space-4);
+    }
+    
+    .metric-card__label {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--color-text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+    
+    .metric-card__icon {
+        font-size: 1.5rem;
+        opacity: 0.6;
+    }
+    
+    .metric-card__value {
+        font-family: var(--font-heading);
+        font-size: clamp(2rem, 5vw, 2.5rem);
+        font-weight: 700;
+        color: var(--color-text);
+        line-height: 1;
+        margin-bottom: var(--space-2);
+    }
+    
+    .metric-card__trend {
+        font-size: 0.8125rem;
+        color: var(--color-text-muted);
+    }
+    
+    /* Variantes de colores para métricas */
+    .metric-card--primary .metric-card__icon { color: var(--color-primary); }
+    .metric-card--success .metric-card__icon { color: #10b981; }
+    .metric-card--info .metric-card__icon { color: #3b82f6; }
+    .metric-card--warning .metric-card__icon { color: #f59e0b; }
+    
+    /* Secondary Metrics Grid */
+    .secondary-metrics {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: var(--space-4);
+        margin-bottom: var(--space-7);
+    }
+    
+    @media (min-width: 640px) {
+        .secondary-metrics {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+    
+    @media (min-width: 1024px) {
+        .secondary-metrics {
+            grid-template-columns: repeat(4, 1fr);
+        }
+    }
+    
+    /* Data Cards Grid */
+    .data-cards {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: var(--space-5);
+        margin-bottom: var(--space-7);
+    }
+    
+    @media (min-width: 768px) {
+        .data-cards {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+    
+    /* Data Card */
+    .data-card {
+        background: white;
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--color-border);
+        overflow: hidden;
+        box-shadow: var(--shadow-sm);
+    }
+    
+    .data-card__header {
+        padding: var(--space-5);
+        border-bottom: 1px solid var(--color-border);
+        background: #fafafa;
+    }
+    
+    .data-card__title {
+        font-family: var(--font-heading);
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: var(--color-text);
+        margin: 0;
+    }
+    
+    .data-card__body {
+        padding: var(--space-5);
+    }
+    
+    /* Progress Bars para Estado de Reservas */
+    .status-item {
+        margin-bottom: var(--space-5);
+    }
+    
+    .status-item:last-child {
+        margin-bottom: 0;
+    }
+    
+    .status-item__header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: var(--space-2);
+    }
+    
+    .status-item__label {
+        font-size: 0.9375rem;
+        font-weight: 500;
+        color: var(--color-text);
+    }
+    
+    .status-item__badge {
+        padding: var(--space-1) var(--space-3);
+        border-radius: var(--radius-full);
+        font-size: 0.8125rem;
+        font-weight: 600;
+    }
+    
+    .status-item__badge--warning {
+        background: #fef3c7;
+        color: #92400e;
+    }
+    
+    .status-item__badge--info {
+        background: #dbeafe;
+        color: #1e40af;
+    }
+    
+    .status-item__badge--success {
+        background: #d1fae5;
+        color: #065f46;
+    }
+    
+    .status-item__progress {
+        height: 12px;
+        background: #f3f4f6;
+        border-radius: var(--radius-full);
+        overflow: hidden;
+    }
+    
+    .status-item__progress-bar {
+        height: 100%;
+        border-radius: var(--radius-full);
+        transition: width var(--transition-smooth);
+    }
+    
+    .status-item__progress-bar--warning { background: #f59e0b; }
+    .status-item__progress-bar--info { background: #3b82f6; }
+    .status-item__progress-bar--success { background: #10b981; }
+    
+    /* Upcoming Bookings List */
+    .booking-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .booking-item {
+        padding: var(--space-4);
+        border-bottom: 1px solid var(--color-border);
+        transition: background var(--transition-base);
+        text-decoration: none;
+        display: block;
+        color: inherit;
+    }
+    
+    .booking-item:last-child {
+        border-bottom: none;
+    }
+    
+    .booking-item:hover {
+        background: #f9fafb;
+    }
+    
+    .booking-item__header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: var(--space-2);
+    }
+    
+    .booking-item__title {
+        font-weight: 600;
+        font-size: 0.9375rem;
+        color: var(--color-text);
+    }
+    
+    .booking-item__datetime {
+        font-size: 0.8125rem;
+        color: var(--color-text-muted);
+        font-weight: 500;
+    }
+    
+    .booking-item__user {
+        font-size: 0.875rem;
+        color: var(--color-text-muted);
+    }
+    
+    .booking-list__empty {
+        padding: var(--space-6);
+        text-align: center;
+        color: var(--color-text-muted);
+        font-size: 0.9375rem;
+    }
+    
+    /* Quick Actions Grid */
+    .quick-actions {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: var(--space-4);
+    }
+    
+    @media (min-width: 768px) {
+        .quick-actions {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+    
+    /* Action Card */
+    .action-card {
+        background: white;
+        border-radius: var(--radius-lg);
+        padding: var(--space-6);
+        border: 1px solid var(--color-border);
+        transition: all var(--transition-smooth);
+    }
+    
+    .action-card:hover {
+        border-color: var(--color-primary);
+        box-shadow: var(--shadow-md);
+    }
+    
+    .action-card__title {
+        font-family: var(--font-heading);
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: var(--color-text);
+        margin-bottom: var(--space-2);
+    }
+    
+    .action-card__description {
+        font-size: 0.9375rem;
+        color: var(--color-text-muted);
+        margin-bottom: var(--space-5);
+        line-height: 1.5;
+    }
+    
+    .action-card__btn {
+        display: inline-block;
+        padding: var(--space-3) var(--space-5);
+        background: var(--color-primary);
+        color: white;
+        border-radius: var(--radius-md);
+        font-weight: 600;
+        font-size: 0.9375rem;
+        text-decoration: none;
+        transition: all var(--transition-base);
+    }
+    
+    .action-card__btn:hover {
+        background: var(--color-primary-dark);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+        color: white;
+    }
+    
+    /* Section Headers */
+    .section-header {
+        margin-bottom: var(--space-5);
+    }
+    
+    .section-header__title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--color-text);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+    
+    /* ========================================
+       OPTIMIZACIONES MOBILE - DASHBOARD
+       ======================================== */
+    
+    /* Mobile (<768px) */
+    @media (max-width: 768px) {
+        /* Page container */
+        .dashboard-page {
+            padding: 0;
+        }
+        
+        .dashboard-container {
+            padding: var(--space-4);
+        }
+        
+        /* Header */
+        .dashboard-header {
+            padding: var(--space-6) 0;
+            text-align: center;
+        }
+        
+        .dashboard-header__title {
+            font-size: 1.75rem;
+            margin-bottom: var(--space-2);
+        }
+        
+        .dashboard-header__subtitle {
+            font-size: 0.9375rem;
+        }
+        
+        /* Navegación horizontal scroll */
+        .dashboard-nav {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: var(--space-3);
+            margin: 0 calc(var(--space-4) * -1) var(--space-6);
+            padding-left: var(--space-4);
+            padding-right: var(--space-4);
+            gap: var(--space-2);
+            scrollbar-width: none;
+        }
+        
+        .dashboard-nav::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .dashboard-nav__link {
+            font-size: 0.875rem;
+            padding: var(--space-2) var(--space-4);
+            white-space: nowrap;
+        }
+        
+        /* Grids a 1 columna */
+        .metrics-grid {
+            grid-template-columns: 1fr !important;
+            gap: var(--space-4);
+        }
+        
+        .secondary-metrics {
+            grid-template-columns: 1fr !important;
+            gap: var(--space-4);
+        }
+        
+        .data-cards {
+            grid-template-columns: 1fr !important;
+            gap: var(--space-5);
+        }
+        
+        .quick-actions {
+            grid-template-columns: 1fr !important;
+            gap: var(--space-4);
+        }
+        
+        /* Metric cards compactas */
+        .metric-card {
+            padding: var(--space-4);
+        }
+        
+        .metric-card__header {
+            margin-bottom: var(--space-3);
+        }
+        
+        .metric-card__label {
+            font-size: 0.8125rem;
+        }
+        
+        .metric-card__icon {
+            font-size: 1.25rem;
+        }
+        
+        .metric-card__value {
+            font-size: 2rem;
+            margin-bottom: var(--space-2);
+        }
+        
+        .metric-card__trend {
+            font-size: 0.8125rem;
+        }
+        
+        /* Data cards */
+        .data-card {
+            padding: 0;
+        }
+        
+        .data-card__header {
+            padding: var(--space-4);
+        }
+        
+        .data-card__title {
+            font-size: 1rem;
+        }
+        
+        .data-card__body {
+            padding: var(--space-4);
+        }
+        
+        /* Status items */
+        .status-item {
+            margin-bottom: var(--space-4);
+        }
+        
+        .status-item__label {
+            font-size: 0.875rem;
+        }
+        
+        .status-item__badge {
+            padding: var(--space-1) var(--space-2);
+            font-size: 0.75rem;
+        }
+        
+        .status-item__progress {
+            height: 10px;
+        }
+        
+        /* Booking items */
+        .booking-item {
+            padding: var(--space-3);
+        }
+        
+        .booking-item__header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: var(--space-1);
+        }
+        
+        .booking-item__title {
+            font-size: 0.875rem;
+        }
+        
+        .booking-item__datetime {
+            font-size: 0.75rem;
+        }
+        
+        .booking-item__user {
+            font-size: 0.8125rem;
+            margin-top: var(--space-1);
+        }
+        
+        .booking-list__empty {
+            padding: var(--space-5);
+            font-size: 0.875rem;
+        }
+        
+        /* Action cards */
+        .action-card {
+            padding: var(--space-5);
+        }
+        
+        .action-card__title {
+            font-size: 1.0625rem;
+            margin-bottom: var(--space-2);
+        }
+        
+        .action-card__description {
+            font-size: 0.875rem;
+            margin-bottom: var(--space-4);
+        }
+        
+        .action-card__btn {
+            width: 100%;
+            text-align: center;
+            padding: var(--space-3) var(--space-4);
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Section headers */
+        .section-header {
+            margin-bottom: var(--space-4);
+        }
+        
+        .section-header__title {
+            font-size: 0.875rem;
+        }
+    }
+    
+    /* Tablets (768px - 1024px) */
+    @media (min-width: 768px) and (max-width: 1024px) {
+        .metrics-grid,
+        .secondary-metrics {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        
+        .quick-actions {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+    
+    /* Mobile landscape */
+    @media (max-width: 768px) and (orientation: landscape) {
+        .dashboard-header {
+            padding: var(--space-4) 0;
+        }
+        
+        .dashboard-header__title {
+            font-size: 1.5rem;
+        }
+        
+        .metrics-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+        }
+    }
+
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-page">
+    <div class="dashboard-container">
+        <!-- Header -->
+        <div class="dashboard-header">
+            <h1 class="dashboard-header__title">Dashboard Administrativo</h1>
+            <p class="dashboard-header__subtitle">Panel de control y métricas del sistema</p>
+        </div>
+        
+        <!-- Navegación -->
+        <nav class="dashboard-nav">
+            <a href="{% url 'dashboard:index' %}" class="dashboard-nav__link dashboard-nav__link--active">
+                Inicio
+            </a>
+            <a href="{% url 'dashboard:bookings' %}" class="dashboard-nav__link">
+                Reservas
+            </a>
+            <a href="{% url 'dashboard:revenue' %}" class="dashboard-nav__link">
+                Ingresos
+            </a>
+            <a href="{% url 'dashboard:services' %}" class="dashboard-nav__link">
+                Servicios
+            </a>
+            <a href="{% url 'dashboard:users' %}" class="dashboard-nav__link">
+                Usuarios
+            </a>
+        </nav>
+        
+        <!-- Métricas Principales (KPIs) -->
+        <div class="metrics-grid">
+            <div class="metric-card metric-card--primary">
+                <div class="metric-card__header">
+                    <span class="metric-card__label">Total Reservas</span>
+                    <span class="metric-card__icon">📅</span>
+                </div>
+                <div class="metric-card__value">{{ total_bookings }}</div>
+                <div class="metric-card__trend">Historial completo</div>
+            </div>
+            
+            <div class="metric-card metric-card--success">
+                <div class="metric-card__header">
+                    <span class="metric-card__label">Ingresos Totales</span>
+                    <span class="metric-card__icon">💰</span>
+                </div>
+                <div class="metric-card__value">${{ total_revenue|floatformat:0 }}</div>
+                <div class="metric-card__trend">Todas las ventas</div>
+            </div>
+            
+            <div class="metric-card metric-card--info">
+                <div class="metric-card__header">
+                    <span class="metric-card__label">Usuarios</span>
+                    <span class="metric-card__icon">👥</span>
+                </div>
+                <div class="metric-card__value">{{ total_users }}</div>
+                <div class="metric-card__trend">Registrados</div>
+            </div>
+            
+            <div class="metric-card metric-card--warning">
+                <div class="metric-card__header">
+                    <span class="metric-card__label">Servicios</span>
+                    <span class="metric-card__icon">✨</span>
+                </div>
+                <div class="metric-card__value">{{ total_services }}</div>
+                <div class="metric-card__trend">Activos</div>
+            </div>
+        </div>
+        
+        <!-- Métricas Secundarias -->
+        <div class="secondary-metrics">
+            <div class="metric-card">
+                <div class="metric-card__header">
+                    <span class="metric-card__label">Hoy - Ingresos</span>
+                    <span class="metric-card__icon">📈</span>
+                </div>
+                <div class="metric-card__value" style="font-size: 1.75rem; color: #10b981;">
+                    ${{ today_revenue|floatformat:0 }}
+                </div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="metric-card__header">
+                    <span class="metric-card__label">Hoy - Reservas</span>
+                    <span class="metric-card__icon">🗓</span>
+                </div>
+                <div class="metric-card__value" style="font-size: 1.75rem;">
+                    {{ today_bookings }}
+                </div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="metric-card__header">
+                    <span class="metric-card__label">Calificación</span>
+                    <span class="metric-card__icon">⭐</span>
+                </div>
+                <div class="metric-card__value" style="font-size: 1.75rem;">
+                    {% if avg_rating %}
+                        {{ avg_rating|floatformat:1 }}
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="metric-card__header">
+                    <span class="metric-card__label">Pendientes</span>
+                    <span class="metric-card__icon">⏳</span>
+                </div>
+                <div class="metric-card__value" style="font-size: 1.75rem; color: #f59e0b;">
+                    {{ pending_bookings }}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Data Cards: Estado + Próximas Reservas -->
+        <div class="data-cards">
+            <!-- Estado de Reservas -->
+            <div class="data-card">
+                <div class="data-card__header">
+                    <h2 class="data-card__title">Estado de Reservas</h2>
+                </div>
+                <div class="data-card__body">
+                    <div class="status-item">
+                        <div class="status-item__header">
+                            <span class="status-item__label">Pendientes</span>
+                            <span class="status-item__badge status-item__badge--warning">
+                                {{ pending_bookings }}
+                            </span>
+                        </div>
+                        <div class="status-item__progress">
+                            <div class="status-item__progress-bar status-item__progress-bar--warning" 
+                                 style="width: {{ pending_percentage }}%">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="status-item">
+                        <div class="status-item__header">
+                            <span class="status-item__label">Confirmadas</span>
+                            <span class="status-item__badge status-item__badge--info">
+                                {{ confirmed_bookings }}
+                            </span>
+                        </div>
+                        <div class="status-item__progress">
+                            <div class="status-item__progress-bar status-item__progress-bar--info" 
+                                 style="width: {{ confirmed_percentage }}%">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="status-item">
+                        <div class="status-item__header">
+                            <span class="status-item__label">Completadas</span>
+                            <span class="status-item__badge status-item__badge--success">
+                                {{ completed_bookings }}
+                            </span>
+                        </div>
+                        <div class="status-item__progress">
+                            <div class="status-item__progress-bar status-item__progress-bar--success" 
+                                 style="width: {{ completed_percentage }}%">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Próximas Reservas -->
+            <div class="data-card">
+                <div class="data-card__header">
+                    <h2 class="data-card__title">Próximas Reservas (7 días)</h2>
+                </div>
+                <div class="data-card__body" style="padding: 0;">
+                    {% if upcoming_bookings %}
+                        <div class="booking-list">
+                            {% for booking in upcoming_bookings %}
+                                <a href="{% url 'bookings:detail' booking.id %}" class="booking-item">
+                                    <div class="booking-item__header">
+                                        <span class="booking-item__title">{{ booking.service.name }}</span>
+                                        <span class="booking-item__datetime">
+                                            {{ booking.booking_date|date:"d/m" }} · {{ booking.booking_time|time:"H:i" }}
+                                        </span>
+                                    </div>
+                                    <div class="booking-item__user">{{ booking.user.get_full_name }}</div>
+                                </a>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="booking-list__empty">
+                            No hay reservas próximas
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Acceso Rápido -->
+        <div class="section-header">
+            <h3 class="section-header__title">Acceso Rápido</h3>
+        </div>
+        
+        <div class="quick-actions">
+            <div class="action-card">
+                <h3 class="action-card__title">Gestión de Reservas</h3>
+                <p class="action-card__description">
+                    Administra, confirma y cancela reservas del sistema
+                </p>
+                <a href="{% url 'dashboard:bookings' %}" class="action-card__btn">
+                    Ir al Panel →
+                </a>
+            </div>
+            
+            <div class="action-card">
+                <h3 class="action-card__title">Reportes de Ingresos</h3>
+                <p class="action-card__description">
+                    Analiza ingresos diarios, por servicio y categoría
+                </p>
+                <a href="{% url 'dashboard:revenue' %}" class="action-card__btn">
+                    Ver Reportes →
+                </a>
+            </div>
+            
+            <div class="action-card">
+                <h3 class="action-card__title">Estadísticas de Servicios</h3>
+                <p class="action-card__description">
+                    Rendimiento y popularidad de cada servicio
+                </p>
+                <a href="{% url 'dashboard:services' %}" class="action-card__btn">
+                    Ver Estadísticas →
+                </a>
+            </div>
+            
+            <div class="action-card">
+                <h3 class="action-card__title">Análisis de Usuarios</h3>
+                <p class="action-card__description">
+                    Comportamiento y métricas de usuarios registrados
+                </p>
+                <a href="{% url 'dashboard:users' %}" class="action-card__btn">
+                    Ver Análisis →
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,973 @@
+/*
+ * SISTEMA DE DISEÑO - SPA WELLNESS
+ * Estilo: Premium, limpio, elegante
+ * Inspiración: Hotel boutique / Wellness moderno
+ * Sistema de Temas: Light Mode (default) + Dark Mode (auto + manual)
+ */
+
+/* ========================================
+   VARIABLES CSS - SISTEMA DE THEMING COMPLETO
+   ======================================== */
+:root {
+  /* ========================================
+     LIGHT MODE - Default (valores base)
+     ======================================== */
+  
+  /* FONDOS TEMÁTICOS */
+  --bg: #ffffff;                  /* Fondo principal */
+  --bg-secondary: #fafaf8;        /* Fondo secundario (cards, sections) */
+  --bg-tertiary: #f5f3f0;         /* Fondo terciario (subtle separators) */
+  
+  /* TEXTOS TEMÁTICOS */
+  --text: #1a1a1a;                /* Texto principal (headings, strong) */
+  --text-secondary: #3d3d3d;      /* Texto secundario (body) */
+  --text-muted: #8b8985;          /* Texto deshabilitado/hints */
+  
+  /* COMPONENTES TEMÁTICOS */
+  --card-bg: #ffffff;             /* Fondo de cards */
+  --input-bg: #ffffff;            /* Fondo de inputs */
+  --input-text: #1a1a1a;          /* Texto en inputs */
+  --input-border: #e8e6e3;        /* Borde de inputs */
+  --input-placeholder: #8b8985;   /* Placeholder en inputs */
+  
+  /* NAVBAR Y HEADER */
+  --navbar-bg: linear-gradient(135deg, #2c5f5d 0%, #4a8886 100%);
+  --navbar-text: #ffffff;
+  --navbar-hover: rgba(255, 255, 255, 0.15);
+  
+  /* FOOTER */
+  --footer-bg: linear-gradient(135deg, #1a1a1a 0%, #3d3d3d 100%);
+  --footer-text: #f5f3f0;
+  
+  /* BORDES Y SEPARADORES */
+  --border: #e8e6e3;              /* Borde normal */
+  --border-light: #f5f3f0;        /* Borde muy sutil */
+  --border-hover: #d0d0d0;        /* Borde en hover */
+  
+  /* COLORES DE MARCA - CONSTANTES */
+  --primary: #2c5f5d;             /* Verde azulado profundo */
+  --primary-light: #4a8886;       /* Verde azulado claro */
+  --primary-dark: #1a3f3e;        /* Verde azulado oscuro */
+  --primary-hover: rgba(44, 95, 93, 0.1);
+  
+  --accent: #d4af37;              /* Dorado suave */
+  --accent-light: #e5c766;        /* Dorado claro */
+  --accent-dark: #b8941f;         /* Dorado oscuro */
+  --accent-hover: rgba(212, 175, 55, 0.1);
+  
+  /* COLORES DE ESTADO */
+  --success: #4a9d7f;             /* Verde wellness */
+  --warning: #d4a574;             /* Ámbar suave */
+  --error: #c77b7b;               /* Coral suave */
+  --info: #6b9eb8;                /* Azul tranquilo */
+  
+  /* SOMBRAS TEMÁTICAS */
+  --shadow-xs: 0 1px 2px rgba(28, 28, 28, 0.04);
+  --shadow-sm: 0 2px 4px rgba(28, 28, 28, 0.06);
+  --shadow-md: 0 4px 12px rgba(28, 28, 28, 0.08);
+  --shadow-lg: 0 8px 24px rgba(28, 28, 28, 0.1);
+  --shadow-xl: 0 16px 48px rgba(28, 28, 28, 0.12);
+  
+  /* TIPOGRAFÍA - NO TEMÁTICO */
+  --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-heading: 'Playfair Display', Georgia, serif;
+  --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+  
+  /* TAMAÑOS DE FUENTE - NO TEMÁTICO */
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.875rem;
+  --text-4xl: 2.25rem;
+  --text-5xl: 3rem;
+  
+  /* PESOS - NO TEMÁTICO */
+  --font-light: 300;
+  --font-normal: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+  
+  /* SPACING - NO TEMÁTICO */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-8: 3rem;
+  --space-10: 4rem;
+  --space-12: 6rem;
+  
+  /* RADIOS - NO TEMÁTICO */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --radius-full: 9999px;
+  
+  /* TRANSICIONES - NO TEMÁTICO */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* MAX-WIDTHS - NO TEMÁTICO */
+  --max-width-xs: 20rem;
+  --max-width-sm: 24rem;
+  --max-width-md: 28rem;
+  --max-width-lg: 32rem;
+  --max-width-xl: 36rem;
+  --max-width-2xl: 42rem;
+  --max-width-3xl: 48rem;
+  --max-width-4xl: 56rem;
+  --max-width-5xl: 64rem;
+  --max-width-6xl: 72rem;
+  --max-width-7xl: 80rem;
+}
+
+/* ========================================
+   RESET Y BASE
+   ======================================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-primary);
+  font-size: var(--text-base);
+  font-weight: var(--font-normal);
+  line-height: 1.6;
+  color: var(--text);
+  background-color: var(--bg);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  transition: background-color var(--transition-base), color var(--transition-base);
+}
+
+/* ========================================
+   TIPOGRAFÍA
+   ======================================== */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: var(--font-semibold);
+  line-height: 1.2;
+  color: var(--text);
+  margin-bottom: var(--space-4);
+}
+
+h1 { font-size: var(--text-4xl); letter-spacing: -0.02em; }
+h2 { font-size: var(--text-3xl); letter-spacing: -0.01em; }
+h3 { font-size: var(--text-2xl); }
+h4 { font-size: var(--text-xl); }
+h5 { font-size: var(--text-lg); }
+h6 { font-size: var(--text-base); font-weight: var(--font-semibold); }
+
+p {
+  margin-bottom: var(--space-4);
+  color: var(--text-secondary);
+}
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+  transition: color var(--transition-base);
+}
+
+a:hover {
+  color: var(--primary-light);
+}
+
+/* ========================================
+   LAYOUT - Header, Main, Footer
+   ======================================== */
+.site-header {
+  background: var(--navbar-bg);
+  box-shadow: var(--shadow-md);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  backdrop-filter: blur(10px);
+}
+
+.site-main {
+  flex: 1;
+  padding: var(--space-8) var(--space-4);
+  max-width: var(--max-width-7xl);
+  margin: 0 auto;
+  width: 100%;
+}
+
+.site-footer {
+  background: var(--footer-bg);
+  color: var(--footer-text);
+  padding: var(--space-8) var(--space-4);
+  margin-top: auto;
+}
+
+/* ========================================
+   NAVBAR - Diseño premium
+   ======================================== */
+.navbar-spa {
+  padding: var(--space-4) 0;
+}
+
+.navbar-brand-spa {
+  font-family: var(--font-heading);
+  font-size: var(--text-2xl);
+  font-weight: var(--font-bold);
+  color: var(--navbar-text) !important;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  transition: all var(--transition-base);
+}
+
+.navbar-brand-spa:hover {
+  transform: translateY(-2px);
+  color: var(--accent-light) !important;
+}
+
+.navbar-brand-icon {
+  font-size: var(--text-3xl);
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+/* Botón hamburguesa (toggler) - Mejorado para mobile */
+.navbar-toggler {
+  padding: var(--space-2);
+  border: 2px solid rgba(255, 255, 255, 0.3) !important;
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.1);
+  transition: all var(--transition-base);
+}
+
+.navbar-toggler:hover,
+.navbar-toggler:focus {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.5) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 0.95)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2.5' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+  width: 24px;
+  height: 24px;
+}
+
+/* Links del navbar en desktop */
+.nav-link-spa {
+  color: var(--navbar-text) !important;
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  padding: var(--space-2) var(--space-4) !important;
+  border-radius: var(--radius-md);
+  transition: all var(--transition-base);
+  letter-spacing: 0.3px;
+  opacity: 0.9;
+}
+
+.nav-link-spa:hover {
+  background-color: var(--navbar-hover);
+  color: var(--navbar-text) !important;
+  transform: translateY(-1px);
+}
+
+.nav-link-spa.active {
+  background-color: var(--navbar-hover);
+  color: var(--accent-light) !important;
+}
+
+.dropdown-menu-spa {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  padding: var(--space-2);
+  margin-top: var(--space-2);
+  transition: all var(--transition-base);
+}
+
+.dropdown-item-spa {
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+  font-size: var(--text-sm);
+  color: var(--text);
+}
+
+.dropdown-item-spa:hover {
+  background-color: var(--bg-tertiary);
+  color: var(--primary);
+  transform: translateX(4px);
+}
+
+.dropdown-divider-spa {
+  margin: var(--space-2) 0;
+  border-color: var(--border);
+}
+
+/* ========================================
+   BOTONES - Sistema completo
+   ======================================== */
+.btn-spa {
+  font-family: var(--font-primary);
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  text-decoration: none;
+  letter-spacing: 0.3px;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-spa::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  transform: translate(-50%, -50%);
+  transition: width var(--transition-slow), height var(--transition-slow);
+}
+
+.btn-spa:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+/* Variantes de botones */
+.btn-spa-primary {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+  color: white;
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-spa-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  color: white;
+}
+
+.btn-spa-accent {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+  color: #1a1a1a;
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-spa-accent:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  color: #1a1a1a;
+}
+
+.btn-spa-outline {
+  background: transparent;
+  border: 2px solid var(--primary);
+  color: var(--primary);
+}
+
+.btn-spa-outline:hover {
+  background: var(--primary);
+  color: white;
+  transform: translateY(-2px);
+}
+
+.btn-spa-ghost {
+  background: transparent;
+  color: var(--primary);
+  box-shadow: none;
+}
+
+.btn-spa-ghost:hover {
+  background: var(--bg-tertiary);
+  color: var(--primary-dark);
+}
+
+/* Tamaños de botones */
+.btn-spa-sm {
+  font-size: var(--text-xs);
+  padding: var(--space-2) var(--space-4);
+}
+
+.btn-spa-lg {
+  font-size: var(--text-lg);
+  padding: var(--space-4) var(--space-6);
+}
+
+/* ========================================
+   CARDS - Sistema premium
+   ======================================== */
+.card-spa {
+  background: var(--card-bg);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-6);
+  transition: all var(--transition-base);
+  border: 1px solid var(--border);
+}
+
+.card-spa:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.card-spa-header {
+  padding-bottom: var(--space-4);
+  border-bottom: 2px solid var(--bg-tertiary);
+  margin-bottom: var(--space-4);
+}
+
+.card-spa-title {
+  font-family: var(--font-heading);
+  font-size: var(--text-2xl);
+  font-weight: var(--font-semibold);
+  color: var(--text);
+  margin: 0;
+}
+
+.card-spa-subtitle {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  margin-top: var(--space-2);
+}
+
+.card-spa-body {
+  color: var(--text-secondary);
+}
+
+.card-spa-footer {
+  margin-top: var(--space-5);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+  justify-content: flex-end;
+}
+
+/* ========================================
+   FORMULARIOS - Diseño elegante
+   ======================================== */
+.form-spa {
+  width: 100%;
+}
+
+.form-group-spa {
+  margin-bottom: var(--space-5);
+}
+
+.form-label-spa {
+  display: block;
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--text);
+  margin-bottom: var(--space-2);
+  letter-spacing: 0.3px;
+}
+
+.form-input-spa,
+.form-select-spa,
+.form-textarea-spa {
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--text-base);
+  font-family: var(--font-primary);
+  color: var(--input-text);
+  background: var(--input-bg);
+  border: 2px solid var(--input-border);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-base);
+}
+
+.form-input-spa:focus,
+.form-select-spa:focus,
+.form-textarea-spa:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-hover);
+  background: var(--input-bg);
+}
+
+.form-input-spa::placeholder {
+  color: var(--text-muted);
+}
+
+.form-textarea-spa {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.form-helper-spa {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  margin-top: var(--space-2);
+}
+
+.form-error-spa {
+  font-size: var(--text-xs);
+  color: var(--error);
+  margin-top: var(--space-2);
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+/* ========================================
+   ALERTS - Notificaciones elegantes
+   ======================================== */
+.alert-spa {
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--space-5);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  border-left: 4px solid;
+  box-shadow: var(--shadow-sm);
+}
+
+.alert-spa-success {
+  background: rgba(74, 157, 127, 0.1);
+  border-color: var(--success);
+  color: var(--success);
+}
+
+.alert-spa-warning {
+  background: rgba(212, 165, 116, 0.1);
+  border-color: var(--warning);
+  color: var(--warning);
+}
+
+.alert-spa-error {
+  background: rgba(199, 123, 123, 0.1);
+  border-color: var(--error);
+  color: var(--error);
+}
+
+.alert-spa-info {
+  background: rgba(107, 158, 184, 0.1);
+  border-color: var(--info);
+  color: var(--info);
+}
+
+.alert-spa-close {
+  background: transparent;
+  border: none;
+  font-size: var(--text-lg);
+  cursor: pointer;
+  color: inherit;
+  opacity: 0.6;
+  transition: opacity var(--transition-fast);
+  padding: 0;
+  margin-left: auto;
+}
+
+.alert-spa-close:hover {
+  opacity: 1;
+}
+
+/* ========================================
+   BADGES - Etiquetas de estado
+   ======================================== */
+.badge-spa {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--text-xs);
+  font-weight: var(--font-semibold);
+  border-radius: var(--radius-full);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.badge-spa-primary {
+  background: var(--primary);
+  color: white;
+}
+
+.badge-spa-accent {
+  background: var(--accent);
+  color: #1a1a1a;
+}
+
+.badge-spa-success {
+  background: var(--success);
+  color: white;
+}
+
+.badge-spa-warning {
+  background: var(--warning);
+  color: #1a1a1a;
+}
+
+/* ========================================
+   FOOTER - Diseño profesional
+   ======================================== */
+.footer-spa-content {
+  max-width: var(--max-width-7xl);
+  margin: 0 auto;
+  text-align: center;
+}
+
+.footer-spa-text {
+  font-size: var(--text-sm);
+  color: var(--footer-text);
+  margin: 0;
+  opacity: 0.8;
+}
+
+.footer-spa-links {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-6);
+  margin-top: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.footer-spa-link {
+  color: var(--footer-text);
+  font-size: var(--text-sm);
+  transition: color var(--transition-base);
+}
+
+.footer-spa-link:hover {
+  color: var(--accent-light);
+}
+
+/* ========================================
+   UTILIDADES
+   ======================================== */
+.container-spa {
+  width: 100%;
+  max-width: var(--max-width-7xl);
+  margin: 0 auto;
+  padding: 0 var(--space-4);
+}
+
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+
+.mt-auto { margin-top: auto; }
+.mb-auto { margin-bottom: auto; }
+
+/* Espaciado */
+.mt-2 { margin-top: var(--space-2); }
+.mt-4 { margin-top: var(--space-4); }
+.mt-6 { margin-top: var(--space-6); }
+.mt-8 { margin-top: var(--space-8); }
+
+.mb-2 { margin-bottom: var(--space-2); }
+.mb-4 { margin-bottom: var(--space-4); }
+.mb-6 { margin-bottom: var(--space-6); }
+.mb-8 { margin-bottom: var(--space-8); }
+
+.py-4 { padding-top: var(--space-4); padding-bottom: var(--space-4); }
+.py-6 { padding-top: var(--space-6); padding-bottom: var(--space-6); }
+.py-8 { padding-top: var(--space-8); padding-bottom: var(--space-8); }
+
+
+/* ========================================
+   NAVBAR MOBILE FIX - Responsive optimization
+   ======================================== */
+
+@media (max-width: 991px) {
+  /* Navbar - Ajuste general */
+  .navbar-spa {
+    padding: var(--space-3) 0;
+  }
+  
+  .container-spa {
+    padding: 0 var(--space-4);
+  }
+  
+  /* Collapse menu - Fondo sólido */
+  .navbar-collapse {
+    margin-top: var(--space-3);
+    background: var(--navbar-bg);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    position: absolute;
+    top: 100%;
+    left: var(--space-4);
+    right: var(--space-4);
+    z-index: 1001;
+  }
+  
+  /* Navbar nav - Lista en mobile */
+  .navbar-nav {
+    flex-direction: column !important;
+    gap: var(--space-1) !important;
+  }
+  
+  /* Nav items - Touch-friendly */
+  .nav-item {
+    width: 100%;
+  }
+  
+  /* Nav links - Full width y padding */
+  .nav-link-spa {
+    display: block !important;
+    width: 100%;
+    padding: var(--space-3) var(--space-3) !important;
+    text-align: left;
+    line-height: 1.5;
+    border-radius: var(--radius-sm);
+    margin-bottom: var(--space-1);
+  }
+  
+  .nav-link-spa:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+  
+  /* Dropdown en mobile - Static position */
+  .dropdown-menu-spa {
+    position: static !important;
+    background: rgba(0, 0, 0, 0.03);
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    margin: var(--space-2) 0 !important;
+    border-radius: var(--radius-sm);
+    transform: none !important;
+  }
+  
+  /* Dropdown items */
+  .dropdown-item-spa {
+    padding: var(--space-2) var(--space-4);
+    margin: var(--space-1) 0;
+    font-size: var(--text-xs);
+    border-radius: var(--radius-sm);
+    line-height: 1.6;
+  }
+  
+  /* Botones en navbar mobile */
+  .navbar-nav .btn-spa {
+    width: 100%;
+    justify-content: center;
+    margin-top: var(--space-3);
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar-collapse {
+    left: calc(var(--space-4) * -1);
+    right: calc(var(--space-4) * -1);
+    padding: var(--space-3);
+    margin-left: var(--space-4);
+    margin-right: var(--space-4);
+  }
+}
+
+/* ========================================
+   SERVICES MOBILE FIX - Card optimization
+   ======================================== */
+
+@media (max-width: 768px) {
+  /* Grid a 1 columna */
+  .services-grid {
+    grid-template-columns: 1fr !important;
+    gap: var(--space-5);
+    padding: var(--space-4);
+  }
+  
+  /* Card padding reducido */
+  .service-card {
+    padding: var(--space-5);
+  }
+  
+  /* Header apilado */
+  .service-card__header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .service-card__title {
+    font-size: 1.25rem;
+  }
+  
+  /* Footer apilado */
+  .service-card__footer {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-3);
+  }
+  
+  /* Botones full-width */
+  .service-card__btn-primary {
+    width: 100%;
+    text-align: center;
+  }
+  
+  .service-card__btn-secondary {
+    width: 100%;
+  }
+  
+  /* Precio centrado */
+  .service-card__price {
+    font-size: 1.5rem;
+    text-align: center;
+  }
+  
+  /* Filtros apilados */
+  .services-filters__form {
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+  
+  .services-filters__select,
+  .services-filters__btn {
+    width: 100%;
+    min-height: 48px;
+  }
+}
+
+/* ========================================
+   BOOKING FORM MOBILE FIX - Input optimization
+   ======================================== */
+
+@media (max-width: 768px) {
+  /* Prevenir zoom en iOS - inputs mínimo 16px */
+  .form-input,
+  .form-textarea,
+  select,
+  input[type="date"],
+  input[type="time"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="password"],
+  input[type="text"] {
+    font-size: 16px !important;
+    padding: var(--space-4);
+    min-height: 48px;
+  }
+  
+  /* Textarea más cómodo */
+  .form-textarea {
+    min-height: 120px;
+    font-size: 16px;
+  }
+  
+  /* Layout: resumen arriba, formulario abajo */
+  .booking-layout {
+    grid-template-columns: 1fr !important;
+    gap: var(--space-4);
+  }
+  
+  .service-summary {
+    position: static !important;
+    order: -1;
+  }
+  
+  /* Formulario full-width */
+  .booking-form-card {
+    padding: var(--space-5);
+  }
+  
+  /* Secciones con spacing */
+  .form-section {
+    margin-bottom: var(--space-6);
+  }
+  
+  /* Groupos de formulario */
+  .form-group {
+    margin-bottom: var(--space-5);
+  }
+  
+  /* Filas de formulario - full width en mobile */
+  .form-row {
+    grid-template-columns: 1fr !important;
+    gap: var(--space-4);
+  }
+  
+  /* Labels claros */
+  .form-label {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    margin-bottom: var(--space-3);
+  }
+  
+  /* Botones full-width */
+  .booking-actions {
+    grid-template-columns: 1fr !important;
+    gap: var(--space-3);
+  }
+  
+  .booking-btn-submit {
+    width: 100%;
+    padding: var(--space-4) var(--space-5);
+    font-size: 1rem;
+    min-height: 48px;
+  }
+  
+  .booking-btn-cancel {
+    width: 100%;
+    text-align: center;
+    min-height: 48px;
+  }
+  
+  /* Help text más legible */
+  .form-help {
+    font-size: 0.8125rem;
+    margin-top: var(--space-2);
+  }
+  
+  /* Error messages */
+  .form-error {
+    font-size: 0.875rem;
+    padding: var(--space-3);
+  }
+  
+  /* Trust note */
+  .trust-note {
+    margin-top: var(--space-5);
+    padding: var(--space-4);
+  }
+}
+
+/* Print styles */
+@media print {
+  .navbar-spa,
+  .site-footer,
+  .dashboard-nav,
+  .btn-export,
+  .page-header__actions,
+  .filters-card {
+    display: none !important;
+  }
+  
+  .site-main {
+    padding: 0;
+  }
+  
+  * {
+    background: white !important;
+    color: black !important;
+  }
+}

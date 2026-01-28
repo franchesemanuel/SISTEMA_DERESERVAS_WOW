@@ -1,0 +1,835 @@
+{% extends 'base.html' %}
+
+{% block title %}Nueva Reserva - {{ service.name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* ===================================
+       BOOKING FORM - PREMIUM UX
+       Diseño: Formulario de spa/hotel boutique
+       Enfoque: Confianza, claridad, sin estrés
+       ================================ */
+    
+    /* Contenedor principal */
+    .booking-page {
+        min-height: 60vh;
+        padding: var(--space-8) var(--space-4);
+        background: linear-gradient(135deg, var(--color-ivory) 0%, var(--color-sand) 100%);
+    }
+    
+    .booking-container {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+    
+    /* Header del formulario */
+    .booking-header {
+        text-align: center;
+        margin-bottom: var(--space-8);
+    }
+    
+    .booking-header__tag {
+        display: inline-block;
+        font-size: 0.875rem;
+        font-weight: 500;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--color-primary);
+        margin-bottom: var(--space-2);
+    }
+    
+    .booking-header__title {
+        font-family: var(--font-heading);
+        font-size: clamp(1.75rem, 4vw, 2.5rem);
+        font-weight: 700;
+        color: var(--color-text);
+        margin-bottom: var(--space-3);
+        line-height: 1.2;
+    }
+    
+    .booking-header__subtitle {
+        font-size: 1rem;
+        color: var(--color-text-muted);
+        max-width: 500px;
+        margin: 0 auto;
+    }
+    
+    /* Layout de 2 columnas: Resumen + Formulario */
+    .booking-layout {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: var(--space-6);
+        align-items: start;
+    }
+    
+    @media (min-width: 768px) {
+        .booking-layout {
+            grid-template-columns: 1fr 1.5fr;
+        }
+    }
+    
+    /* Card de resumen del servicio (sticky en desktop) */
+    .service-summary {
+        background: white;
+        border-radius: var(--radius-lg);
+        padding: var(--space-6);
+        border: 1px solid var(--color-border);
+        box-shadow: var(--shadow-sm);
+        position: sticky;
+        top: var(--space-6);
+    }
+    
+    .service-summary__tag {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--color-text-muted);
+        margin-bottom: var(--space-2);
+        display: block;
+    }
+    
+    .service-summary__title {
+        font-family: var(--font-heading);
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--color-text);
+        margin-bottom: var(--space-3);
+        line-height: 1.3;
+    }
+    
+    .service-summary__description {
+        font-size: 0.9375rem;
+        line-height: 1.6;
+        color: var(--color-text-muted);
+        margin-bottom: var(--space-5);
+        padding-bottom: var(--space-5);
+        border-bottom: 1px solid var(--color-border);
+    }
+    
+    .service-summary__details {
+        display: grid;
+        gap: var(--space-4);
+    }
+    
+    .service-summary__detail {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+    }
+    
+    .service-summary__detail-icon {
+        font-size: 1.25rem;
+        color: var(--color-primary);
+    }
+    
+    .service-summary__detail-content {
+        flex: 1;
+    }
+    
+    .service-summary__detail-label {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--color-text-muted);
+        margin-bottom: var(--space-1);
+    }
+    
+    .service-summary__detail-value {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--color-text);
+    }
+    
+    .service-summary__price {
+        margin-top: var(--space-5);
+        padding-top: var(--space-5);
+        border-top: 1px solid var(--color-border);
+        text-align: center;
+    }
+    
+    .service-summary__price-label {
+        font-size: 0.875rem;
+        color: var(--color-text-muted);
+        margin-bottom: var(--space-2);
+    }
+    
+    .service-summary__price-value {
+        font-family: var(--font-heading);
+        font-size: 2.25rem;
+        font-weight: 700;
+        color: var(--color-primary);
+    }
+    
+    /* Card del formulario */
+    .booking-form-card {
+        background: white;
+        border-radius: var(--radius-lg);
+        padding: var(--space-7);
+        border: 1px solid var(--color-border);
+        box-shadow: var(--shadow-md);
+    }
+    
+    /* Indicador de pasos simple */
+    .booking-steps {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--space-2);
+        margin-bottom: var(--space-7);
+    }
+    
+    .booking-step {
+        width: 40px;
+        height: 4px;
+        background: var(--color-border);
+        border-radius: 2px;
+        transition: background var(--transition-base);
+    }
+    
+    .booking-step--active {
+        background: var(--color-primary);
+    }
+    
+    /* Secciones del formulario */
+    .form-section {
+        margin-bottom: var(--space-7);
+    }
+    
+    .form-section:last-of-type {
+        margin-bottom: 0;
+    }
+    
+    .form-section__title {
+        font-family: var(--font-heading);
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: var(--color-text);
+        margin-bottom: var(--space-1);
+    }
+    
+    .form-section__subtitle {
+        font-size: 0.875rem;
+        color: var(--color-text-muted);
+        margin-bottom: var(--space-5);
+    }
+    
+    /* Form Groups */
+    .form-group {
+        margin-bottom: var(--space-5);
+    }
+    
+    .form-group--last {
+        margin-bottom: 0;
+    }
+    
+    /* Labels elegantes */
+    .form-label {
+        display: block;
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--color-text);
+        margin-bottom: var(--space-2);
+        letter-spacing: 0.01em;
+    }
+    
+    .form-label--optional::after {
+        content: " (opcional)";
+        font-weight: 400;
+        color: var(--color-text-muted);
+        font-size: 0.8125rem;
+    }
+    
+    /* Inputs premium */
+    .form-input,
+    .form-textarea {
+        width: 100%;
+        padding: var(--space-4);
+        font-size: 1rem;
+        font-family: var(--font-primary);
+        color: var(--color-text);
+        background: white;
+        border: 2px solid var(--color-border);
+        border-radius: var(--radius-md);
+        transition: all var(--transition-base);
+    }
+    
+    .form-input:focus,
+    .form-textarea:focus {
+        outline: none;
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 3px rgba(44, 95, 93, 0.1);
+    }
+    
+    .form-input::placeholder,
+    .form-textarea::placeholder {
+        color: var(--color-text-muted);
+        opacity: 0.6;
+    }
+    
+    .form-textarea {
+        resize: vertical;
+        min-height: 120px;
+        line-height: 1.6;
+    }
+    
+    /* Grid de 2 columnas para fecha/hora */
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: var(--space-4);
+    }
+    
+    @media (min-width: 768px) {
+        .form-row {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+    
+    /* Mensaje de ayuda */
+    .form-help {
+        display: block;
+        margin-top: var(--space-2);
+        font-size: 0.8125rem;
+        color: var(--color-text-muted);
+        line-height: 1.5;
+    }
+    
+    .form-help::before {
+        content: "ℹ️ ";
+        margin-right: var(--space-1);
+    }
+    
+    /* Mensajes de error */
+    .form-error {
+        display: block;
+        margin-top: var(--space-2);
+        padding: var(--space-3);
+        background: #fee;
+        border: 1px solid #fcc;
+        border-radius: var(--radius-sm);
+        font-size: 0.875rem;
+        color: #c33;
+        line-height: 1.5;
+    }
+    
+    .form-error::before {
+        content: "⚠️ ";
+        margin-right: var(--space-1);
+    }
+    
+    /* Alerta de errores no field */
+    .form-alert {
+        padding: var(--space-4);
+        background: #fee;
+        border: 2px solid #fcc;
+        border-radius: var(--radius-md);
+        margin-bottom: var(--space-6);
+    }
+    
+    .form-alert__text {
+        font-size: 0.9375rem;
+        color: #c33;
+        font-weight: 500;
+        margin: 0;
+    }
+    
+    /* Botones de acción */
+    .booking-actions {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: var(--space-3);
+        margin-top: var(--space-7);
+        padding-top: var(--space-7);
+        border-top: 1px solid var(--color-border);
+    }
+    
+    @media (min-width: 768px) {
+        .booking-actions {
+            grid-template-columns: 1fr auto;
+        }
+    }
+    
+    .booking-btn-submit {
+        padding: var(--space-4) var(--space-8);
+        background: var(--color-accent);
+        color: var(--color-text);
+        border: none;
+        border-radius: var(--radius-lg);
+        font-size: 1.0625rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all var(--transition-base);
+        box-shadow: var(--shadow-sm);
+    }
+    
+    .booking-btn-submit:hover {
+        background: var(--color-accent-dark);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
+    }
+    
+    .booking-btn-submit:active {
+        transform: translateY(0);
+    }
+    
+    .booking-btn-cancel {
+        padding: var(--space-4) var(--space-6);
+        background: transparent;
+        color: var(--color-text-muted);
+        border: 2px solid var(--color-border);
+        border-radius: var(--radius-lg);
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all var(--transition-base);
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+    }
+    
+    .booking-btn-cancel:hover {
+        border-color: var(--color-primary);
+        color: var(--color-primary);
+        background: rgba(44, 95, 93, 0.03);
+    }
+    
+    /* Trust indicators */
+    .trust-note {
+        margin-top: var(--space-6);
+        padding: var(--space-4);
+        background: rgba(44, 95, 93, 0.05);
+        border-radius: var(--radius-md);
+        text-align: center;
+    }
+    
+    .trust-note__text {
+        font-size: 0.875rem;
+        color: var(--color-text-muted);
+        margin: 0;
+        line-height: 1.6;
+    }
+    
+    .trust-note__icon {
+        margin-right: var(--space-2);
+    }
+    
+    /* ========================================
+       OPTIMIZACIONES MOBILE - BOOKING FORM
+       ======================================== */
+    
+    /* Mobile (<768px) */
+    @media (max-width: 768px) {
+        /* Page container */
+        .booking-page {
+            padding: 0;
+        }
+        
+        .booking-container {
+            padding: 0;
+        }
+        
+        /* Header compacto */
+        .booking-header {
+            padding: var(--space-6) var(--space-4);
+            text-align: center;
+        }
+        
+        .booking-header__tag {
+            font-size: 0.75rem;
+        }
+        
+        .booking-header__title {
+            font-size: 1.75rem;
+            margin-bottom: var(--space-2);
+        }
+        
+        .booking-header__subtitle {
+            font-size: 0.9375rem;
+        }
+        
+        /* Layout apilado (resumen arriba, formulario abajo) */
+        .booking-layout {
+            grid-template-columns: 1fr !important;
+            gap: 0;
+        }
+        
+        /* Resumen sticky se convierte en estático */
+        .service-summary {
+            position: static !important;
+            top: auto;
+            padding: var(--space-5);
+            margin-bottom: 0;
+            border-radius: 0;
+            border-left: none;
+            border-right: none;
+            order: -1; /* Mostrar primero en mobile */
+        }
+        
+        .service-summary__tag {
+            font-size: 0.75rem;
+        }
+        
+        .service-summary__title {
+            font-size: 1.5rem;
+            margin-bottom: var(--space-3);
+        }
+        
+        .service-summary__description {
+            font-size: 0.875rem;
+            margin-bottom: var(--space-4);
+            padding-bottom: var(--space-4);
+        }
+        
+        .service-summary__details {
+            gap: var(--space-3);
+        }
+        
+        .service-summary__detail {
+            gap: var(--space-2);
+        }
+        
+        .service-summary__detail-icon {
+            font-size: 1rem;
+        }
+        
+        .service-summary__detail-label {
+            font-size: 0.6875rem;
+        }
+        
+        .service-summary__detail-value {
+            font-size: 0.9375rem;
+        }
+        
+        .service-summary__price {
+            margin-top: var(--space-4);
+            padding-top: var(--space-4);
+        }
+        
+        .service-summary__price-value {
+            font-size: 1.75rem;
+        }
+        
+        /* Formulario mobile */
+        .booking-form-card {
+            padding: var(--space-5) var(--space-4);
+            border-radius: 0;
+            border-left: none;
+            border-right: none;
+            box-shadow: none;
+        }
+        
+        .booking-steps {
+            gap: var(--space-2);
+            margin-bottom: var(--space-5);
+        }
+        
+        .booking-step {
+            width: 32px;
+            height: 3px;
+        }
+        
+        /* Secciones del formulario */
+        .form-section {
+            margin-bottom: var(--space-6);
+        }
+        
+        .form-section__title {
+            font-size: 1.125rem;
+            margin-bottom: var(--space-2);
+        }
+        
+        .form-section__subtitle {
+            font-size: 0.875rem;
+            margin-bottom: var(--space-4);
+        }
+        
+        /* Form rows apiladas */
+        .form-row {
+            grid-template-columns: 1fr !important;
+            gap: var(--space-4);
+        }
+        
+        /* Inputs optimizados para mobile */
+        .form-input,
+        .form-textarea {
+            min-height: 48px;
+            font-size: 16px !important; /* Evita zoom en iOS */
+            padding: var(--space-3) var(--space-4);
+        }
+        
+        .form-textarea {
+            min-height: 120px;
+        }
+        
+        .form-label {
+            font-size: 0.9375rem;
+            margin-bottom: var(--space-2);
+        }
+        
+        .form-help {
+            font-size: 0.8125rem;
+            margin-top: var(--space-3);
+        }
+        
+        .form-error {
+            font-size: 0.8125rem;
+            margin-top: var(--space-2);
+        }
+        
+        /* Botones de acción */
+        .booking-actions {
+            flex-direction: column;
+            gap: var(--space-3);
+            margin-top: var(--space-6);
+        }
+        
+        .booking-btn-submit,
+        .booking-btn-cancel {
+            width: 100%;
+            min-height: 52px;
+            padding: var(--space-3) var(--space-5);
+            font-size: 1rem;
+            justify-content: center;
+            display: flex;
+            align-items: center;
+        }
+        
+        .booking-btn-cancel {
+            order: 1; /* Cancelar después de confirmar */
+        }
+        
+        /* Trust note */
+        .trust-note {
+            margin-top: var(--space-5);
+            padding: var(--space-3);
+        }
+        
+        .trust-note__text {
+            font-size: 0.8125rem;
+        }
+        
+        /* Alertas */
+        .form-alert {
+            padding: var(--space-3);
+            margin-bottom: var(--space-4);
+        }
+        
+        .form-alert__text {
+            font-size: 0.875rem;
+        }
+    }
+    
+    /* Tablets (768px - 1024px) */
+    @media (min-width: 768px) and (max-width: 1024px) {
+        .booking-container {
+            padding: var(--space-8) var(--space-5);
+        }
+        
+        .booking-layout {
+            gap: var(--space-6);
+        }
+        
+        .booking-form-card {
+            padding: var(--space-6);
+        }
+    }
+    
+    /* Mobile landscape */
+    @media (max-width: 768px) and (orientation: landscape) {
+        .booking-header {
+            padding: var(--space-5) var(--space-4);
+        }
+        
+        .booking-header__title {
+            font-size: 1.5rem;
+        }
+        
+        .service-summary {
+            padding: var(--space-4);
+        }
+        
+        .form-section {
+            margin-bottom: var(--space-5);
+        }
+    }
+
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="booking-page">
+    <div class="booking-container">
+        <!-- Header -->
+        <div class="booking-header">
+            <span class="booking-header__tag">✦ Paso final</span>
+            <h1 class="booking-header__title">Confirma tu Reserva</h1>
+            <p class="booking-header__subtitle">
+                Completa los datos y asegura tu momento de bienestar
+            </p>
+        </div>
+        
+        <!-- Layout: Resumen + Formulario -->
+        <div class="booking-layout">
+            <!-- COLUMNA 1: Resumen del Servicio (Sticky) -->
+            <aside class="service-summary">
+                <span class="service-summary__tag">Tu selección</span>
+                <h2 class="service-summary__title">{{ service.name }}</h2>
+                <p class="service-summary__description">{{ service.description }}</p>
+                
+                <div class="service-summary__details">
+                    <div class="service-summary__detail">
+                        <span class="service-summary__detail-icon">⏱</span>
+                        <div class="service-summary__detail-content">
+                            <div class="service-summary__detail-label">Duración</div>
+                            <div class="service-summary__detail-value">{{ service.duration_minutes }} minutos</div>
+                        </div>
+                    </div>
+                    
+                    <div class="service-summary__detail">
+                        <span class="service-summary__detail-icon">{{ service.category.icon }}</span>
+                        <div class="service-summary__detail-content">
+                            <div class="service-summary__detail-label">Categoría</div>
+                            <div class="service-summary__detail-value">{{ service.category.name }}</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="service-summary__price">
+                    <div class="service-summary__price-label">Precio Total</div>
+                    <div class="service-summary__price-value">${{ service.price }}</div>
+                </div>
+            </aside>
+            
+            <!-- COLUMNA 2: Formulario -->
+            <div class="booking-form-card">
+                <!-- Indicador de pasos visual -->
+                <div class="booking-steps">
+                    <div class="booking-step booking-step--active"></div>
+                    <div class="booking-step booking-step--active"></div>
+                    <div class="booking-step"></div>
+                </div>
+                
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    
+                    <!-- Errores generales -->
+                    {% if form.non_field_errors %}
+                        <div class="form-alert">
+                            <p class="form-alert__text">{{ form.non_field_errors.0 }}</p>
+                        </div>
+                    {% endif %}
+                    
+                    <!-- SECCIÓN 1: Fecha y Hora -->
+                    <div class="form-section">
+                        <h3 class="form-section__title">¿Cuándo quieres venir?</h3>
+                        <p class="form-section__subtitle">Selecciona la fecha y hora que mejor te convengan</p>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="{{ form.booking_date.id_for_label }}" class="form-label">
+                                    Fecha
+                                </label>
+                                <input 
+                                    type="date" 
+                                    name="booking_date" 
+                                    id="{{ form.booking_date.id_for_label }}"
+                                    class="form-input"
+                                    value="{{ form.booking_date.value|default:'' }}"
+                                    required
+                                >
+                                {% if form.booking_date.errors %}
+                                    <span class="form-error">{{ form.booking_date.errors.0 }}</span>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="{{ form.booking_time.id_for_label }}" class="form-label">
+                                    Hora
+                                </label>
+                                <input 
+                                    type="time" 
+                                    name="booking_time" 
+                                    id="{{ form.booking_time.id_for_label }}"
+                                    class="form-input"
+                                    value="{{ form.booking_time.value|default:'' }}"
+                                    required
+                                >
+                                {% if form.booking_time.errors %}
+                                    <span class="form-error">{{ form.booking_time.errors.0 }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <span class="form-help">
+                            Te recomendamos llegar 10 minutos antes de tu cita
+                        </span>
+                    </div>
+                    
+                    <!-- SECCIÓN 2: Datos de Contacto -->
+                    <div class="form-section">
+                        <h3 class="form-section__title">Datos de contacto</h3>
+                        <p class="form-section__subtitle">Para confirmar tu reserva y enviarte recordatorios</p>
+                        
+                        <div class="form-group">
+                            <label for="{{ form.contact_phone.id_for_label }}" class="form-label">
+                                Teléfono
+                            </label>
+                            <input 
+                                type="tel" 
+                                name="contact_phone" 
+                                id="{{ form.contact_phone.id_for_label }}"
+                                class="form-input"
+                                placeholder="+56 9 1234 5678"
+                                value="{{ form.contact_phone.value|default:'' }}"
+                                required
+                            >
+                            {% if form.contact_phone.errors %}
+                                <span class="form-error">{{ form.contact_phone.errors.0 }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <!-- SECCIÓN 3: Notas Especiales (Opcional) -->
+                    <div class="form-section">
+                        <h3 class="form-section__title">Notas especiales</h3>
+                        <p class="form-section__subtitle">¿Algo que debamos saber? (opcional)</p>
+                        
+                        <div class="form-group form-group--last">
+                            <label for="{{ form.notes.id_for_label }}" class="form-label form-label--optional">
+                                Comentarios adicionales
+                            </label>
+                            <textarea 
+                                name="notes" 
+                                id="{{ form.notes.id_for_label }}"
+                                class="form-textarea"
+                                placeholder="Ej: Alergias, preferencias de temperatura, primera visita..."
+                            >{{ form.notes.value|default:'' }}</textarea>
+                            {% if form.notes.errors %}
+                                <span class="form-error">{{ form.notes.errors.0 }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <!-- Botones de Acción -->
+                    <div class="booking-actions">
+                        <button type="submit" class="booking-btn-submit">
+                            ✓ Confirmar Reserva
+                        </button>
+                        <a href="{% url 'services:detail' service.id %}" class="booking-btn-cancel">
+                            Cancelar
+                        </a>
+                    </div>
+                    
+                    <!-- Nota de confianza -->
+                    <div class="trust-note">
+                        <p class="trust-note__text">
+                            <span class="trust-note__icon">🔒</span>
+                            Recibirás un email de confirmación inmediatamente. Puedes cancelar sin cargo hasta 24h antes.
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

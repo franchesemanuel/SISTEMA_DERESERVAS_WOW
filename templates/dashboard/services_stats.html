@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% block title %}Estadísticas de Servicios - Dashboard{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h1>Estadísticas de Servicios</h1>
+    </div>
+</div>
+
+<!-- Navegación del Dashboard -->
+<div class="mb-4">
+    <nav class="nav nav-tabs">
+        <a class="nav-link" href="{% url 'dashboard:index' %}">Inicio</a>
+        <a class="nav-link" href="{% url 'dashboard:bookings' %}">Reservas</a>
+        <a class="nav-link" href="{% url 'dashboard:revenue' %}">Ingresos</a>
+        <a class="nav-link active" href="{% url 'dashboard:services' %}">Servicios</a>
+        <a class="nav-link" href="{% url 'dashboard:users' %}">Usuarios</a>
+    </nav>
+</div>
+
+<div class="row">
+    <!-- Estadísticas por Servicio -->
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">Rendimiento de Servicios</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Servicio</th>
+                                <th>Reservas</th>
+                                <th>Calificación</th>
+                                <th>Ingresos</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for service in services %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ service.name }}</strong>
+                                        <br>
+                                        <small class="text-muted">{{ service.category.name }}</small>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-primary">{{ service.total_bookings }}</span>
+                                    </td>
+                                    <td>
+                                        {% if service.avg_rating %}
+                                            {{ service.avg_rating|floatformat:1 }} ⭐
+                                        {% else %}
+                                            <span class="text-muted">Sin reseñas</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>${{ service.total_revenue|default:"0" }}</td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted py-4">
+                                        No hay servicios
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Estadísticas por Categoría -->
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">Categorías</h5>
+            </div>
+            <div class="card-body">
+                <div class="list-group">
+                    {% for category in categories %}
+                        <div class="list-group-item">
+                            <div class="d-flex w-100 justify-content-between">
+                                <strong>{{ category.name }}</strong>
+                            </div>
+                            <small class="text-muted">
+                                {{ category.total_services }} servicio(s) | 
+                                {{ category.total_bookings }} reserva(s)
+                            </small>
+                        </div>
+                    {% empty %}
+                        <div class="text-muted text-center py-4">
+                            Sin categorías
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

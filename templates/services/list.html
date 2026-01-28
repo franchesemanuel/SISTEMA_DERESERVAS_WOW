@@ -1,0 +1,557 @@
+{% extends 'base.html' %}
+
+{% block title %}Servicios{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* ===================================
+       SERVICIOS - SECCIÓN PREMIUM
+       Diseño: Catálogo spa/hotel boutique
+       ================================ */
+    
+    /* Hero de Servicios */
+    .services-hero {
+        text-align: center;
+        padding: var(--space-12) var(--space-4) var(--space-8);
+        background: linear-gradient(135deg, var(--color-ivory) 0%, var(--color-sand) 100%);
+        border-bottom: 1px solid rgba(44, 95, 93, 0.1);
+    }
+    
+    .services-hero__tag {
+        display: inline-block;
+        font-size: 0.875rem;
+        font-weight: 500;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--color-primary);
+        margin-bottom: var(--space-2);
+    }
+    
+    .services-hero__title {
+        font-family: var(--font-heading);
+        font-size: clamp(2rem, 5vw, 3rem);
+        font-weight: 700;
+        color: var(--color-text);
+        margin-bottom: var(--space-3);
+        line-height: 1.2;
+    }
+    
+    .services-hero__description {
+        font-size: 1.125rem;
+        color: var(--color-text-muted);
+        max-width: 600px;
+        margin: 0 auto var(--space-6);
+        line-height: 1.6;
+    }
+    
+    /* Filtros Premium */
+    .services-filters {
+        padding: var(--space-6) var(--space-4);
+        background: white;
+        border-bottom: 1px solid var(--color-border);
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+    }
+    
+    .services-filters__form {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        gap: var(--space-3);
+        align-items: center;
+        flex-wrap: wrap;
+    }
+    
+    .services-filters__select {
+        flex: 1;
+        min-width: 200px;
+        padding: var(--space-3) var(--space-4);
+        border: 2px solid var(--color-border);
+        border-radius: var(--radius-lg);
+        font-size: 1rem;
+        color: var(--color-text);
+        background: white;
+        transition: all var(--transition-base);
+        font-family: var(--font-primary);
+    }
+    
+    .services-filters__select:focus {
+        outline: none;
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 3px rgba(44, 95, 93, 0.1);
+    }
+    
+    .services-filters__btn {
+        padding: var(--space-3) var(--space-6);
+        background: var(--color-primary);
+        color: white;
+        border: none;
+        border-radius: var(--radius-lg);
+        font-weight: 600;
+        cursor: pointer;
+        transition: all var(--transition-base);
+    }
+    
+    .services-filters__btn:hover {
+        background: var(--color-primary-dark);
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-md);
+    }
+    
+    /* Grid de Servicios */
+    .services-grid {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: var(--space-8) var(--space-4);
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: var(--space-6);
+    }
+    
+    @media (min-width: 768px) {
+        .services-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+    
+    @media (min-width: 1024px) {
+        .services-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+    
+    /* Service Card Premium */
+    .service-card {
+        background: white;
+        border-radius: var(--radius-lg);
+        padding: var(--space-6);
+        border: 1px solid var(--color-border);
+        transition: all var(--transition-smooth);
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+    
+    .service-card:hover {
+        transform: translateY(-8px);
+        box-shadow: var(--shadow-lg);
+        border-color: var(--color-primary);
+    }
+    
+    /* Card Header con Badge */
+    .service-card__header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: var(--space-4);
+    }
+    
+    .service-card__title {
+        font-family: var(--font-heading);
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--color-text);
+        line-height: 1.3;
+        margin: 0;
+        flex: 1;
+    }
+    
+    .service-card__badge {
+        font-size: 1.5rem;
+        margin-left: var(--space-2);
+        opacity: 0.8;
+        transition: transform var(--transition-base);
+    }
+    
+    .service-card:hover .service-card__badge {
+        transform: scale(1.15);
+    }
+    
+    /* Descripción */
+    .service-card__description {
+        font-size: 0.9375rem;
+        line-height: 1.6;
+        color: var(--color-text-muted);
+        margin-bottom: var(--space-5);
+        flex-grow: 1;
+    }
+    
+    /* Metadata (duración) */
+    .service-card__meta {
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        padding: var(--space-3) 0;
+        margin-bottom: var(--space-5);
+        border-top: 1px solid var(--color-border);
+        border-bottom: 1px solid var(--color-border);
+    }
+    
+    .service-card__meta-icon {
+        color: var(--color-primary);
+        font-size: 1rem;
+    }
+    
+    .service-card__meta-text {
+        font-size: 0.875rem;
+        color: var(--color-text-muted);
+        font-weight: 500;
+    }
+    
+    /* Footer con Precio y CTA */
+    .service-card__footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: var(--space-3);
+    }
+    
+    .service-card__price {
+        font-family: var(--font-heading);
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: var(--color-primary);
+        margin: 0;
+    }
+    
+    .service-card__currency {
+        font-size: 1rem;
+        opacity: 0.7;
+    }
+    
+    /* Botones */
+    .service-card__btn-primary {
+        padding: var(--space-3) var(--space-5);
+        background: var(--color-accent);
+        color: var(--color-text);
+        border: none;
+        border-radius: var(--radius-md);
+        font-weight: 600;
+        font-size: 0.9375rem;
+        cursor: pointer;
+        transition: all var(--transition-base);
+        text-decoration: none;
+        display: inline-block;
+        white-space: nowrap;
+    }
+    
+    .service-card__btn-primary:hover {
+        background: var(--color-accent-dark);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+        color: var(--color-text);
+    }
+    
+    .service-card__btn-secondary {
+        display: block;
+        width: 100%;
+        text-align: center;
+        padding: var(--space-3);
+        margin-top: var(--space-4);
+        border: 2px solid var(--color-border);
+        border-radius: var(--radius-md);
+        font-weight: 600;
+        font-size: 0.875rem;
+        color: var(--color-text-muted);
+        text-decoration: none;
+        transition: all var(--transition-base);
+    }
+    
+    .service-card__btn-secondary:hover {
+        border-color: var(--color-primary);
+        color: var(--color-primary);
+        background: rgba(44, 95, 93, 0.03);
+    }
+    
+    /* Estado vacío */
+    .services-empty {
+        max-width: 600px;
+        margin: var(--space-12) auto;
+        padding: var(--space-8) var(--space-4);
+        text-align: center;
+    }
+    
+    .services-empty__icon {
+        font-size: 4rem;
+        margin-bottom: var(--space-4);
+        opacity: 0.3;
+    }
+    
+    .services-empty__title {
+        font-family: var(--font-heading);
+        font-size: 1.5rem;
+        color: var(--color-text);
+        margin-bottom: var(--space-2);
+    }
+    
+    .services-empty__text {
+        color: var(--color-text-muted);
+        font-size: 1rem;
+        margin-bottom: var(--space-6);
+    }
+    
+    .services-empty__btn {
+        display: inline-block;
+        padding: var(--space-3) var(--space-6);
+        background: var(--color-primary);
+        color: white;
+        border-radius: var(--radius-lg);
+        text-decoration: none;
+        font-weight: 600;
+        transition: all var(--transition-base);
+    }
+    
+    .services-empty__btn:hover {
+        background: var(--color-primary-dark);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+        color: white;
+    }
+    
+    /* ========================================
+       OPTIMIZACIONES MOBILE - SERVICES
+       ======================================== */
+    
+    /* Mobile (<768px) */
+    @media (max-width: 768px) {
+        /* Hero compacto */
+        .services-hero {
+            padding: var(--space-8) var(--space-4);
+            text-align: center;
+        }
+        
+        .services-hero__title {
+            font-size: 2rem;
+            margin-bottom: var(--space-3);
+        }
+        
+        .services-hero__description {
+            font-size: 1rem;
+            margin-bottom: 0;
+        }
+        
+        /* Filtros apilados */
+        .services-filters {
+            padding: var(--space-4);
+        }
+        
+        .services-filters__form {
+            flex-direction: column;
+            gap: var(--space-3);
+        }
+        
+        .services-filters__select,
+        .services-filters__btn {
+            width: 100%;
+            min-height: 48px;
+            font-size: 1rem;
+        }
+        
+        /* Grid a 1 columna */
+        .services-grid {
+            grid-template-columns: 1fr;
+            gap: var(--space-5);
+            padding: 0 var(--space-4);
+        }
+        
+        /* Cards optimizadas */
+        .service-card {
+            padding: var(--space-5);
+        }
+        
+        .service-card__header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: var(--space-2);
+        }
+        
+        .service-card__title {
+            font-size: 1.25rem;
+        }
+        
+        .service-card__badge {
+            font-size: 1.5rem;
+        }
+        
+        .service-card__description {
+            font-size: 0.9375rem;
+            margin-bottom: var(--space-4);
+        }
+        
+        .service-card__meta {
+            padding: var(--space-2) var(--space-3);
+            margin-bottom: var(--space-4);
+        }
+        
+        /* Footer en mobile */
+        .service-card__footer {
+            flex-direction: column;
+            gap: var(--space-3);
+            align-items: stretch;
+        }
+        
+        .service-card__price {
+            font-size: 1.5rem;
+            text-align: center;
+        }
+        
+        .service-card__btn-primary {
+            width: 100%;
+            justify-content: center;
+            text-align: center;
+            padding: var(--space-3) var(--space-4);
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .service-card__btn-secondary {
+            padding: var(--space-3);
+            margin-top: var(--space-3);
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Estado vacío */
+        .services-empty {
+            padding: var(--space-8) var(--space-4);
+            margin: var(--space-8) 0;
+        }
+        
+        .services-empty__icon {
+            font-size: 3rem;
+        }
+        
+        .services-empty__title {
+            font-size: 1.25rem;
+        }
+        
+        .services-empty__text {
+            font-size: 0.9375rem;
+        }
+        
+        .services-empty__btn {
+            width: 100%;
+            padding: var(--space-3) var(--space-5);
+            min-height: 48px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+    }
+    
+    /* Tablets (768px - 1024px) */
+    @media (min-width: 768px) and (max-width: 1024px) {
+        .services-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--space-5);
+        }
+        
+        .services-hero {
+            padding: var(--space-10) var(--space-5);
+        }
+    }
+    
+    /* Mobile landscape */
+    @media (max-width: 768px) and (orientation: landscape) {
+        .services-hero {
+            padding: var(--space-6) var(--space-4);
+        }
+        
+        .services-hero__title {
+            font-size: 1.75rem;
+        }
+    }
+
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="services-hero">
+    <span class="services-hero__tag">✦ Experiencias Premium</span>
+    <h1 class="services-hero__title">Nuestros Tratamientos</h1>
+    <p class="services-hero__description">
+        Descubre nuestro catálogo de servicios diseñados para tu bienestar. 
+        Cada tratamiento combina técnicas profesionales con productos premium.
+    </p>
+</section>
+
+<!-- Filtros -->
+<div class="services-filters">
+    <form method="get" class="services-filters__form">
+        <select name="category" class="services-filters__select">
+            <option value="">Todas las categorías</option>
+            {% for category in categories %}
+                <option value="{{ category.id }}" {% if category.id|stringformat:"s" == selected_category %}selected{% endif %}>
+                    {{ category.icon }} {{ category.name }}
+                </option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="services-filters__btn">Filtrar</button>
+    </form>
+</div>
+
+<!-- Grid de Servicios -->
+<div class="services-grid">
+    {% for service in services %}
+        <article class="service-card">
+            <!-- Header con título y badge -->
+            <div class="service-card__header">
+                <h2 class="service-card__title">{{ service.name }}</h2>
+                <span class="service-card__badge">{{ service.category.icon }}</span>
+            </div>
+            
+            <!-- Descripción -->
+            <p class="service-card__description">{{ service.description }}</p>
+            
+            <!-- Metadata: Duración -->
+            <div class="service-card__meta">
+                <span class="service-card__meta-icon">⏱</span>
+                <span class="service-card__meta-text">{{ service.duration_minutes }} minutos</span>
+            </div>
+            
+            <!-- Footer: Precio + Botón Reservar -->
+            <div class="service-card__footer">
+                <p class="service-card__price">
+                    <span class="service-card__currency">$</span>{{ service.price }}
+                </p>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'bookings:create' service.id %}" class="service-card__btn-primary">
+                        Reservar
+                    </a>
+                {% else %}
+                    <a href="{% url 'login' %}" class="service-card__btn-primary">
+                        Reservar
+                    </a>
+                {% endif %}
+            </div>
+            
+            <!-- Ver Detalles -->
+            <a href="{% url 'services:detail' service.id %}" class="service-card__btn-secondary">
+                Ver detalles completos →
+            </a>
+        </article>
+    {% empty %}
+        <!-- Estado vacío -->
+        <div class="services-empty" style="grid-column: 1 / -1;">
+            <div class="services-empty__icon">🌿</div>
+            <h2 class="services-empty__title">No hay servicios disponibles</h2>
+            <p class="services-empty__text">
+                {% if selected_category %}
+                    No encontramos servicios en esta categoría. Prueba con otra opción.
+                {% else %}
+                    Por el momento no hay servicios activos en nuestro catálogo.
+                {% endif %}
+            </p>
+            {% if selected_category %}
+                <a href="{% url 'services:list' %}" class="services-empty__btn">Ver todos los servicios</a>
+            {% endif %}
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+
+{% block title %}Estadísticas de Usuarios - Dashboard{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h1>Estadísticas de Usuarios</h1>
+    </div>
+</div>
+
+<!-- Navegación del Dashboard -->
+<div class="mb-4">
+    <nav class="nav nav-tabs">
+        <a class="nav-link" href="{% url 'dashboard:index' %}">Inicio</a>
+        <a class="nav-link" href="{% url 'dashboard:bookings' %}">Reservas</a>
+        <a class="nav-link" href="{% url 'dashboard:revenue' %}">Ingresos</a>
+        <a class="nav-link" href="{% url 'dashboard:services' %}">Servicios</a>
+        <a class="nav-link active" href="{% url 'dashboard:users' %}">Usuarios</a>
+    </nav>
+</div>
+
+<!-- Resumen de Usuarios -->
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h6 class="card-title text-muted">Total de Usuarios</h6>
+                <h2>{{ total_users }}</h2>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h6 class="card-title text-muted">Usuarios con Reservas</h6>
+                <h2>{{ users_with_bookings }}</h2>
+                <small class="text-muted">
+                    ({{ users_with_bookings_percentage|floatformat:0 }}%)
+                </small>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h6 class="card-title text-muted">Nuevos Usuarios (30 días)</h6>
+                <h2>{{ new_users }}</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Usuarios Top -->
+<div class="card">
+    <div class="card-header bg-light">
+        <h5 class="mb-0">Top Usuarios por Gasto</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Usuario</th>
+                        <th>Email</th>
+                        <th>Reservas</th>
+                        <th>Gasto Total</th>
+                        <th>Promedio/Reserva</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in top_users %}
+                        <tr>
+                            <td>
+                                <strong>{{ user.user.get_full_name }}</strong>
+                            </td>
+                            <td>
+                                <small class="text-muted">{{ user.user.email }}</small>
+                            </td>
+                            <td>
+                                <span class="badge bg-info">{{ user.total_bookings }}</span>
+                            </td>
+                            <td>${{ user.total_spent }}</td>
+                            <td>${{ user.average_per_booking|floatformat:2 }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center text-muted py-4">
+                                Sin usuarios con reservas
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

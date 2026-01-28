@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background-color: #dc3545;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 5px 5px 0 0;
+        }
+        .content {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 0 0 5px 5px;
+        }
+        .booking-details {
+            background-color: white;
+            padding: 15px;
+            border-left: 4px solid #dc3545;
+            margin: 15px 0;
+        }
+        .button {
+            display: inline-block;
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 15px;
+        }
+        .footer {
+            text-align: center;
+            color: #666;
+            font-size: 12px;
+            margin-top: 20px;
+        }
+        .note {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 10px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Reserva Cancelada</h1>
+        </div>
+        
+        <div class="content">
+            <p>Hola {{ user.first_name|default:user.username }},</p>
+            
+            <p>Te confirmamos que tu reserva ha sido cancelada exitosamente.</p>
+            
+            <div class="booking-details">
+                <h3>Detalles de tu Reserva Cancelada</h3>
+                <p><strong>Servicio:</strong> {{ booking.service.name }}</p>
+                <p><strong>Fecha:</strong> {{ booking.booking_date|date:"d/m/Y" }}</p>
+                <p><strong>Hora:</strong> {{ booking.booking_time|time:"H:i" }}</p>
+                <p><strong>Monto:</strong> ${{ booking.total_price }}</p>
+                {% if booking.cancellation_reason %}
+                <p><strong>Razón:</strong> {{ booking.cancellation_reason }}</p>
+                {% endif %}
+            </div>
+            
+            <div class="note">
+                <p><strong>Nota importante:</strong> Si realizaste un pago, la reembolso será procesado en 3-5 días hábiles a tu cuenta original.</p>
+            </div>
+            
+            <p>Sentimos que no puedas acompañarnos en esta ocasión. Esperamos verte pronto nuevamente.</p>
+            
+            <a href="http://localhost:8000/services/" class="button">Ver Otros Servicios</a>
+            
+            <div class="footer">
+                <p>© 2026 Sistema de Reservas SPA. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

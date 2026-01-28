@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+
+{% block title %}Reportes de Ingresos - Dashboard{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h1>Reportes de Ingresos</h1>
+    </div>
+    <div class="col-auto">
+        <div class="btn-group" role="group">
+            <a href="{% url 'dashboard:export_revenue_pdf' %}" class="btn btn-outline-primary btn-sm" title="Descargar como PDF">
+                <i class="bi bi-file-pdf"></i> PDF
+            </a>
+            <a href="{% url 'dashboard:export_revenue_excel' %}" class="btn btn-outline-success btn-sm" title="Descargar como Excel">
+                <i class="bi bi-file-earmark-spreadsheet"></i> Excel
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Navegación del Dashboard -->
+<div class="mb-4">
+    <nav class="nav nav-tabs">
+        <a class="nav-link" href="{% url 'dashboard:index' %}">Inicio</a>
+        <a class="nav-link" href="{% url 'dashboard:bookings' %}">Reservas</a>
+        <a class="nav-link active" href="{% url 'dashboard:revenue' %}">Ingresos</a>
+        <a class="nav-link" href="{% url 'dashboard:services' %}">Servicios</a>
+        <a class="nav-link" href="{% url 'dashboard:users' %}">Usuarios</a>
+    </nav>
+</div>
+
+<!-- Resumen de Ingresos -->
+<div class="row g-3 mb-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h6 class="card-title text-muted">Ingresos Totales (Todo el tiempo)</h6>
+                <h2 class="text-success">${{ total_all_time }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h6 class="card-title text-muted">Ingresos Últimos 30 Días</h6>
+                <h2 class="text-success">${{ total_thirty_days }}</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Ingresos por Servicio -->
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">Ingresos por Servicio</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Servicio</th>
+                                <th>Ingresos</th>
+                                <th>Reservas</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in revenue_by_service %}
+                                <tr>
+                                    <td>{{ item.service__name }}</td>
+                                    <td>${{ item.total }}</td>
+                                    <td>{{ item.count }}</td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="3" class="text-muted text-center py-3">Sin datos</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Ingresos por Categoría -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">Ingresos por Categoría</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Categoría</th>
+                                <th>Ingresos</th>
+                                <th>Reservas</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in revenue_by_category %}
+                                <tr>
+                                    <td>{{ item.service__category__name }}</td>
+                                    <td>${{ item.total }}</td>
+                                    <td>{{ item.count }}</td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="3" class="text-muted text-center py-3">Sin datos</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Ingresos Diarios (últimos 30 días) -->
+<div class="card">
+    <div class="card-header bg-light">
+        <h5 class="mb-0">Ingresos Diarios (Últimos 30 días)</h5>
+    </div>
+    <div class="card-body">
+        {% if daily_revenue %}
+            <div class="table-responsive">
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Ingresos</th>
+                            <th>Reservas</th>
+                            <th>Promedio/Reserva</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in daily_revenue %}
+                            <tr>
+                                <td>{{ item.date|date:"d/m/Y" }}</td>
+                                <td>${{ item.total }}</td>
+                                <td>{{ item.count }}</td>
+                                <td>${{ item.average|floatformat:2 }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="text-muted text-center py-4">Sin datos de ingresos</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background-color: #28a745;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 5px 5px 0 0;
+        }
+        .content {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 0 0 5px 5px;
+        }
+        .booking-details {
+            background-color: white;
+            padding: 15px;
+            border-left: 4px solid #28a745;
+            margin: 15px 0;
+        }
+        .button {
+            display: inline-block;
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 15px;
+        }
+        .footer {
+            text-align: center;
+            color: #666;
+            font-size: 12px;
+            margin-top: 20px;
+        }
+        .stars {
+            font-size: 24px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>¿Qué te pareció tu Experiencia?</h1>
+        </div>
+        
+        <div class="content">
+            <p>Hola {{ user.first_name|default:user.username }},</p>
+            
+            <p>Esperamos que hayas disfrutado de tu sesión de {{ booking.service.name }}. Tu opinión es muy importante para nosotros y nos ayuda a mejorar nuestros servicios.</p>
+            
+            <div class="booking-details">
+                <h3>Tu Servicio</h3>
+                <p><strong>Servicio:</strong> {{ booking.service.name }}</p>
+                <p><strong>Fecha:</strong> {{ booking.booking_date|date:"d/m/Y" }}</p>
+                <div class="stars">⭐ ⭐ ⭐ ⭐ ⭐</div>
+            </div>
+            
+            <p>¿Qué calificación le das a tu experiencia? Haz clic en el botón de abajo para compartir tu reseña.</p>
+            
+            <a href="http://localhost:8000/bookings/{{ booking.id }}/review/" class="button">Dejar Reseña</a>
+            
+            <p style="margin-top: 20px; font-size: 14px; color: #666;">Las reseñas de nuestros clientes nos ayudan a mantener altos estándares de calidad.</p>
+            
+            <div class="footer">
+                <p>© 2026 Sistema de Reservas SPA. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

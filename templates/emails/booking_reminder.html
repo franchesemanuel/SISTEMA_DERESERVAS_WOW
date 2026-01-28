@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background-color: #ffc107;
+            color: #333;
+            padding: 20px;
+            text-align: center;
+            border-radius: 5px 5px 0 0;
+        }
+        .content {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 0 0 5px 5px;
+        }
+        .booking-details {
+            background-color: white;
+            padding: 15px;
+            border-left: 4px solid #ffc107;
+            margin: 15px 0;
+        }
+        .button {
+            display: inline-block;
+            background-color: #ffc107;
+            color: #333;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 15px;
+        }
+        .footer {
+            text-align: center;
+            color: #666;
+            font-size: 12px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>¡Recordatorio de tu Cita!</h1>
+        </div>
+        
+        <div class="content">
+            <p>Hola {{ user.first_name|default:user.username }},</p>
+            
+            <p>Te recordamos que tienes una cita programada mañana. Aquí están los detalles:</p>
+            
+            <div class="booking-details">
+                <h3>Detalles de tu Cita</h3>
+                <p><strong>Servicio:</strong> {{ booking.service.name }}</p>
+                <p><strong>Fecha:</strong> {{ booking.booking_date|date:"d/m/Y" }}</p>
+                <p><strong>Hora:</strong> {{ booking.booking_time|time:"H:i" }}</p>
+                <p><strong>Duración:</strong> {{ booking.service.duration_minutes }} minutos</p>
+                <p><strong>Precio:</strong> ${{ booking.total_price }}</p>
+            </div>
+            
+            <p>Por favor, asegúrate de llegar 10 minutos antes de tu cita. Si no puedes asistir, por favor cancela tu reserva a tiempo.</p>
+            
+            <a href="http://localhost:8000/bookings/{{ booking.id }}/" class="button">Ver mi Reserva</a>
+            
+            <div class="footer">
+                <p>© 2026 Sistema de Reservas SPA. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

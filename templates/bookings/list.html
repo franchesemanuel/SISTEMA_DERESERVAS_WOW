@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block title %}Mis Reservas{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h1>Mis Reservas</h1>
+    </div>
+</div>
+
+<!-- Filtros -->
+<div class="row mb-4">
+    <div class="col">
+        <form method="get" class="d-flex gap-2">
+            <select name="status" class="form-select w-auto">
+                <option value="">Todos los estados</option>
+                <option value="pending" {% if status_filter == 'pending' %}selected{% endif %}>Pendiente</option>
+                <option value="confirmed" {% if status_filter == 'confirmed' %}selected{% endif %}>Confirmada</option>
+                <option value="completed" {% if status_filter == 'completed' %}selected{% endif %}>Completada</option>
+                <option value="cancelled" {% if status_filter == 'cancelled' %}selected{% endif %}>Cancelada</option>
+            </select>
+            <button type="submit" class="btn btn-outline-primary">Filtrar</button>
+        </form>
+    </div>
+</div>
+
+{% if bookings %}
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead class="table-light">
+                <tr>
+                    <th>Servicio</th>
+                    <th>Fecha</th>
+                    <th>Hora</th>
+                    <th>Estado</th>
+                    <th>Precio</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for booking in bookings %}
+                    <tr>
+                        <td>{{ booking.service.name }}</td>
+                        <td>{{ booking.booking_date|date:"d/m/Y" }}</td>
+                        <td>{{ booking.booking_time|time:"H:i" }}</td>
+                        <td>
+                            {% if booking.status == 'pending' %}
+                                <span class="badge bg-warning">Pendiente</span>
+                            {% elif booking.status == 'confirmed' %}
+                                <span class="badge bg-info">Confirmada</span>
+                            {% elif booking.status == 'completed' %}
+                                <span class="badge bg-success">Completada</span>
+                            {% elif booking.status == 'cancelled' %}
+                                <span class="badge bg-danger">Cancelada</span>
+                            {% endif %}
+                        </td>
+                        <td>${{ booking.total_price }}</td>
+                        <td>
+                            <a href="{% url 'bookings:detail' booking.id %}" class="btn btn-sm btn-outline-primary">
+                                Ver
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <div class="alert alert-info">
+        <h5>No hay reservas</h5>
+        <p>Aún no tienes reservas. <a href="{% url 'services:list' %}">Explora nuestros servicios</a></p>
+    </div>
+{% endif %}
+
+<a href="{% url 'services:list' %}" class="btn btn-primary mt-4">Hacer Nueva Reserva</a>
+{% endblock %}

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Sistema de Reservas{% endblock %}</title>
+    
+    <!-- Fuentes Google - Playfair Display e Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap 5 - Solo para grid y utilidades -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Sistema de diseño personalizado -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    
+    
+    <!-- HTMX para interactividad -->
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Header / Navbar Premium -->
+    <header class="site-header">
+        <nav class="navbar navbar-expand-lg navbar-spa">
+            <div class="container-fluid container-spa">
+                <a class="navbar-brand-spa" href="/">
+                    <span class="navbar-brand-icon">✦</span>
+                    <span>Serenity Spa</span>
+                </a>
+                
+                <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto align-items-lg-center gap-2">
+                        {% if user.is_authenticated %}
+                            <li class="nav-item">
+                                <a class="nav-link-spa" href="{% url 'bookings:list' %}">Mis Reservas</a>
+                            </li>
+                            
+                            {% if user.is_staff %}
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link-spa dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        ⚙️ Administración
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-menu-spa dropdown-menu-end" aria-labelledby="adminDropdown">
+                                        <li><a class="dropdown-item-spa" href="{% url 'dashboard:index' %}">Dashboard</a></li>
+                                        <li><a class="dropdown-item-spa" href="{% url 'dashboard:bookings' %}">Gestión de Reservas</a></li>
+                                        <li><a class="dropdown-item-spa" href="{% url 'dashboard:revenue' %}">Reportes de Ingresos</a></li>
+                                        <li><a class="dropdown-item-spa" href="{% url 'dashboard:services' %}">Estadísticas de Servicios</a></li>
+                                        <li><a class="dropdown-item-spa" href="{% url 'dashboard:users' %}">Estadísticas de Usuarios</a></li>
+                                        <li><hr class="dropdown-divider-spa"></li>
+                                        <li><a class="dropdown-item-spa" href="/admin/">Django Admin</a></li>
+                                    </ul>
+                                </li>
+                            {% endif %}
+                            
+                            <li class="nav-item dropdown">
+                                <a class="nav-link-spa dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    {{ user.first_name|default:user.username }}
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-spa dropdown-menu-end" aria-labelledby="userDropdown">
+                                    <li><a class="dropdown-item-spa" href="{% url 'accounts:profile' %}">Mi Perfil</a></li>
+                                    <li><hr class="dropdown-divider-spa"></li>
+                                    <li><a class="dropdown-item-spa" href="{% url 'accounts:logout' %}">Cerrar Sesión</a></li>
+                                </ul>
+                            </li>
+                        {% else %}
+                            <li class="nav-item">
+                                <a class="nav-link-spa" href="{% url 'login' %}">Iniciar Sesión</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="btn-spa btn-spa-accent btn-spa-sm" href="{% url 'register' %}">Registrarse</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Contenido Principal -->
+    <main class="site-main">
+        <!-- Mensajes del sistema (flash messages) -->
+        {% if messages %}
+            <div class="container-spa">
+                {% for message in messages %}
+                    <div class="alert-spa alert-spa-{{ message.tags }} fade-in" role="alert">
+                        <div>
+                            <strong>
+                                {% if message.tags == 'success' %}✓{% endif %}
+                                {% if message.tags == 'error' %}✕{% endif %}
+                                {% if message.tags == 'warning' %}⚠{% endif %}
+                                {% if message.tags == 'info' %}ℹ{% endif %}
+                            </strong>
+                            <span>{{ message }}</span>
+                        </div>
+                        <button type="button" class="alert-spa-close" onclick="this.parentElement.remove()">×</button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <!-- Bloque de contenido heredable -->
+        <div class="container-spa">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <!-- Footer Premium -->
+    <footer class="site-footer">
+        <div class="footer-spa-content">
+            <p class="footer-spa-text">© 2026 Serenity Spa. Todos los derechos reservados.</p>
+            <div class="footer-spa-links">
+                <a href="#" class="footer-spa-link">Política de Privacidad</a>
+                <a href="#" class="footer-spa-link">Términos de Servicio</a>
+                <a href="#" class="footer-spa-link">Contacto</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

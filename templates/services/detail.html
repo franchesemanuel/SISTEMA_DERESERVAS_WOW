@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ service.name }}{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1>{{ service.name }}</h1>
+        <span class="badge bg-secondary">{{ service.category.name }}</span>
+    </div>
+    <div class="col-md-4 text-md-end">
+        <h3 class="text-success">${{ service.price }}</h3>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <!-- Descripción -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Descripción</h5>
+                <p>{{ service.description }}</p>
+            </div>
+        </div>
+        
+        <!-- Detalles -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Detalles del Servicio</h5>
+                <ul class="list-unstyled">
+                    <li><strong>Duración:</strong> {{ service.duration_minutes }} minutos</li>
+                    <li><strong>Capacidad:</strong> Hasta {{ service.max_capacity }} persona(s)</li>
+                    <li><strong>Precio:</strong> ${{ service.price }}</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Disponibilidades -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Disponibilidad por Día</h5>
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Día</th>
+                                <th>Horario</th>
+                                <th>Disponible</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for availability in availabilities %}
+                                <tr>
+                                    <td>{{ availability.get_day_of_week_display }}</td>
+                                    <td>{{ availability.start_time|time:"H:i" }} - {{ availability.end_time|time:"H:i" }}</td>
+                                    <td>
+                                        {% if availability.is_available %}
+                                            <span class="badge bg-success">Disponible</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">No disponible</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Reseñas -->
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Reseñas ({{ review_count }})</h5>
+                
+                {% if avg_rating %}
+                    <div class="mb-3">
+                        <div class="rating-stars">
+                            {% for i in "12345" %}
+                                {% if forloop.counter <= avg_rating %}
+                                    ⭐
+                                {% else %}
+                                    ☆
+                                {% endif %}
+                            {% endfor %}
+                            <span class="ms-2">{{ avg_rating|floatformat:1 }} de 5</span>
+                        </div>
+                    </div>
+                {% endif %}
+                
+                {% for booking in reviews %}
+                    {% if booking.review %}
+                        <div class="border-bottom mb-3 pb-3">
+                            <div class="d-flex justify-content-between">
+                                <strong>{{ booking.user.get_full_name }}</strong>
+                                <small class="text-muted">{{ booking.review.created_at|date:"d/m/Y" }}</small>
+                            </div>
+                            <div class="mb-2">
+                                {{ booking.review.get_rating_display }}
+                            </div>
+                            <p class="mb-0">{{ booking.review.comment }}</p>
+                        </div>
+                    {% endif %}
+                {% empty %}
+                    <p class="text-muted">No hay reseñas aún</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Sidebar -->
+    <div class="col-md-4">
+        <div class="card sticky-top" style="top: 20px;">
+            <div class="card-body">
+                <h5 class="card-title">Reservar Ahora</h5>
+                
+                {% if user.is_authenticated %}
+                    <a href="{% url 'bookings:create' service.id %}" class="btn btn-primary w-100 mb-2">
+                        Crear Reserva
+                    </a>
+                    <small class="text-muted">
+                        Serás redirigido al formulario de reserva
+                    </small>
+                {% else %}
+                    <a href="{% url 'login' %}" class="btn btn-primary w-100 mb-2">
+                        Inicia sesión para reservar
+                    </a>
+                    <p class="small text-muted">
+                        ¿No tienes cuenta? <a href="{% url 'register' %}">Regístrate aquí</a>
+                    </p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .hover-shadow {
+        transition: box-shadow 0.3s ease;
+    }
+    
+    .hover-shadow:hover {
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+    }
+    
+    .rating-stars {
+        font-size: 1.2rem;
+    }
+</style>
+{% endblock %}

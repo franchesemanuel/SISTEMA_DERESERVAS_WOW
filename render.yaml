@@ -1,0 +1,32 @@
+services:
+  # Web Service
+  - type: web
+    name: spa-wellness-booking
+    runtime: python
+    plan: free
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn config.wsgi:application"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.0
+      - key: DEBUG
+        value: false
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ALLOWED_HOSTS
+        sync: false
+      - key: CSRF_TRUSTED_ORIGINS
+        sync: false
+      - key: DATABASE_URL
+        fromDatabase:
+          name: spa-wellness-db
+          property: connectionString
+    autoDeploy: true
+
+  # PostgreSQL Database (opcional)
+  # Descomentar si quieres usar PostgreSQL en lugar de SQLite
+  # - type: pserv
+  #   name: spa-wellness-db
+  #   plan: free
+  #   databaseName: spa_wellness
+  #   databaseUser: spa_admin

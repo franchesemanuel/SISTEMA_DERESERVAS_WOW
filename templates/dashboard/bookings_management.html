@@ -1,0 +1,627 @@
+{% extends 'base.html' %}
+
+{% block title %}Gestión de Reservas - Dashboard{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Reutilizamos estilos del dashboard principal */
+    .dashboard-page {
+        min-height: calc(100vh - 200px);
+        padding: var(--space-6) var(--space-4);
+        background: #f8f9fa;
+    }
+    
+    .dashboard-container {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+    
+    /* Header con acciones */
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: var(--space-4);
+        margin-bottom: var(--space-6);
+    }
+    
+    .page-header__title {
+        font-family: var(--font-heading);
+        font-size: clamp(1.75rem, 4vw, 2.25rem);
+        font-weight: 700;
+        color: var(--color-text);
+        margin: 0;
+    }
+    
+    .page-header__actions {
+        display: flex;
+        gap: var(--space-2);
+    }
+    
+    .btn-export {
+        padding: var(--space-2) var(--space-4);
+        border: 2px solid var(--color-border);
+        border-radius: var(--radius-md);
+        background: white;
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--color-text-muted);
+        text-decoration: none;
+        transition: all var(--transition-base);
+        white-space: nowrap;
+    }
+    
+    .btn-export:hover {
+        border-color: var(--color-primary);
+        color: var(--color-primary);
+        background: rgba(44, 95, 93, 0.03);
+    }
+    
+    /* Navegación */
+    .dashboard-nav {
+        display: flex;
+        gap: var(--space-2);
+        margin-bottom: var(--space-7);
+        overflow-x: auto;
+        padding-bottom: var(--space-2);
+    }
+    
+    .dashboard-nav__link {
+        padding: var(--space-3) var(--space-5);
+        border-radius: var(--radius-lg);
+        font-weight: 600;
+        font-size: 0.9375rem;
+        color: var(--color-text-muted);
+        text-decoration: none;
+        white-space: nowrap;
+        transition: all var(--transition-base);
+        border: 2px solid transparent;
+    }
+    
+    .dashboard-nav__link:hover {
+        color: var(--color-primary);
+        background: rgba(44, 95, 93, 0.05);
+    }
+    
+    .dashboard-nav__link--active {
+        color: var(--color-primary);
+        background: rgba(44, 95, 93, 0.08);
+        border-color: var(--color-primary);
+    }
+    
+    /* Filtros */
+    .filters-card {
+        background: white;
+        border-radius: var(--radius-lg);
+        padding: var(--space-6);
+        border: 1px solid var(--color-border);
+        margin-bottom: var(--space-6);
+        box-shadow: var(--shadow-sm);
+    }
+    
+    .filters-form {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: var(--space-4);
+    }
+    
+    @media (min-width: 768px) {
+        .filters-form {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+    
+    .form-field {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .form-field__label {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--color-text);
+        margin-bottom: var(--space-2);
+    }
+    
+    .form-field__input,
+    .form-field__select {
+        padding: var(--space-3);
+        border: 2px solid var(--color-border);
+        border-radius: var(--radius-md);
+        font-size: 0.9375rem;
+        color: var(--color-text);
+        background: white;
+        transition: all var(--transition-base);
+    }
+    
+    .form-field__input:focus,
+    .form-field__select:focus {
+        outline: none;
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 3px rgba(44, 95, 93, 0.1);
+    }
+    
+    .filters-actions {
+        grid-column: 1 / -1;
+        display: flex;
+        gap: var(--space-3);
+        padding-top: var(--space-4);
+    }
+    
+    .btn-filter {
+        padding: var(--space-3) var(--space-6);
+        background: var(--color-primary);
+        color: white;
+        border: none;
+        border-radius: var(--radius-md);
+        font-weight: 600;
+        font-size: 0.9375rem;
+        cursor: pointer;
+        transition: all var(--transition-base);
+    }
+    
+    .btn-filter:hover {
+        background: var(--color-primary-dark);
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-md);
+    }
+    
+    .btn-clear {
+        padding: var(--space-3) var(--space-6);
+        background: transparent;
+        color: var(--color-text-muted);
+        border: 2px solid var(--color-border);
+        border-radius: var(--radius-md);
+        font-weight: 600;
+        font-size: 0.9375rem;
+        cursor: pointer;
+        text-decoration: none;
+        transition: all var(--transition-base);
+        display: inline-block;
+    }
+    
+    .btn-clear:hover {
+        border-color: var(--color-text-muted);
+        color: var(--color-text);
+    }
+    
+    /* Tabla moderna */
+    .table-card {
+        background: white;
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--color-border);
+        overflow: hidden;
+        box-shadow: var(--shadow-sm);
+    }
+    
+    .table-wrapper {
+        overflow-x: auto;
+    }
+    
+    .data-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    
+    .data-table__header {
+        background: #fafafa;
+        border-bottom: 2px solid var(--color-border);
+    }
+    
+    .data-table__header th {
+        padding: var(--space-4);
+        text-align: left;
+        font-size: 0.8125rem;
+        font-weight: 700;
+        color: var(--color-text);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+    
+    .data-table__body tr {
+        border-bottom: 1px solid var(--color-border);
+        transition: background var(--transition-base);
+    }
+    
+    .data-table__body tr:hover {
+        background: #f9fafb;
+    }
+    
+    .data-table__body td {
+        padding: var(--space-4);
+        font-size: 0.9375rem;
+        color: var(--color-text);
+    }
+    
+    .data-table__id {
+        font-family: monospace;
+        font-weight: 600;
+        color: var(--color-text-muted);
+    }
+    
+    .data-table__empty {
+        padding: var(--space-8);
+        text-align: center;
+        color: var(--color-text-muted);
+        font-size: 1rem;
+    }
+    
+    /* Badges modernos */
+    .status-badge {
+        display: inline-block;
+        padding: var(--space-1) var(--space-3);
+        border-radius: var(--radius-full);
+        font-size: 0.8125rem;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+    
+    .status-badge--warning {
+        background: #fef3c7;
+        color: #92400e;
+    }
+    
+    .status-badge--info {
+        background: #dbeafe;
+        color: #1e40af;
+    }
+    
+    .status-badge--success {
+        background: #d1fae5;
+        color: #065f46;
+    }
+    
+    .status-badge--danger {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+    
+    /* Botón de acción */
+    .btn-action {
+        padding: var(--space-2) var(--space-4);
+        border: 2px solid var(--color-border);
+        border-radius: var(--radius-md);
+        background: white;
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--color-text);
+        text-decoration: none;
+        transition: all var(--transition-base);
+        display: inline-block;
+    }
+    
+    .btn-action:hover {
+        border-color: var(--color-primary);
+        color: var(--color-primary);
+        background: rgba(44, 95, 93, 0.03);
+    }
+    
+    /* ========================================
+       OPTIMIZACIONES MOBILE - ADMIN PANEL
+       ======================================== */
+    
+    /* Mobile (<768px) */
+    @media (max-width: 768px) {
+        /* Page */
+        .dashboard-page {
+            padding: 0;
+        }
+        
+        .dashboard-container {
+            padding: var(--space-4);
+        }
+        
+        /* Header con acciones */
+        .page-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: var(--space-4);
+            padding: var(--space-6) 0;
+        }
+        
+        .page-header__title {
+            font-size: 1.75rem;
+        }
+        
+        .page-header__actions {
+            width: 100%;
+            justify-content: stretch;
+            gap: var(--space-3);
+        }
+        
+        .btn-export {
+            flex: 1;
+            min-height: 44px;
+            padding: var(--space-3) var(--space-4);
+            justify-content: center;
+            font-size: 0.875rem;
+        }
+        
+        /* Navegación scroll horizontal */
+        .dashboard-nav {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: var(--space-3);
+            margin: 0 calc(var(--space-4) * -1) var(--space-6);
+            padding-left: var(--space-4);
+            padding-right: var(--space-4);
+            gap: var(--space-2);
+            scrollbar-width: none;
+        }
+        
+        .dashboard-nav::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .dashboard-nav__link {
+            font-size: 0.875rem;
+            padding: var(--space-2) var(--space-4);
+            white-space: nowrap;
+        }
+        
+        /* Filtros apilados */
+        .filters-card {
+            padding: var(--space-5);
+            margin-bottom: var(--space-5);
+        }
+        
+        .filters-form {
+            grid-template-columns: 1fr !important;
+            gap: var(--space-4);
+        }
+        
+        .form-field {
+            grid-column: 1;
+        }
+        
+        .form-field__label {
+            font-size: 0.875rem;
+            margin-bottom: var(--space-2);
+        }
+        
+        .form-field__select,
+        .form-field__input {
+            min-height: 48px;
+            font-size: 16px; /* Evita zoom en iOS */
+            padding: var(--space-3) var(--space-4);
+        }
+        
+        .filters-actions {
+            grid-column: 1;
+            flex-direction: column;
+            gap: var(--space-3);
+        }
+        
+        .btn-filter,
+        .btn-clear {
+            width: 100%;
+            min-height: 48px;
+            justify-content: center;
+        }
+        
+        /* Tabla responsive con scroll horizontal */
+        .table-card {
+            padding: 0;
+            margin: 0 calc(var(--space-4) * -1);
+            border-radius: 0;
+            border-left: none;
+            border-right: none;
+        }
+        
+        .table-wrapper {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .data-table {
+            min-width: 800px; /* Forzar scroll horizontal */
+        }
+        
+        .data-table th,
+        .data-table td {
+            padding: var(--space-3) var(--space-2);
+            font-size: 0.8125rem;
+        }
+        
+        .data-table th {
+            font-size: 0.75rem;
+        }
+        
+        .data-table__id {
+            font-size: 0.75rem;
+        }
+        
+        .status-badge {
+            padding: var(--space-1) var(--space-2);
+            font-size: 0.6875rem;
+        }
+        
+        .btn-action {
+            padding: var(--space-2) var(--space-3);
+            font-size: 0.75rem;
+            white-space: nowrap;
+        }
+        
+        .data-table__empty {
+            padding: var(--space-6) var(--space-4);
+            font-size: 0.875rem;
+        }
+    }
+    
+    /* Tablets (768px - 1024px) */
+    @media (min-width: 768px) and (max-width: 1024px) {
+        .dashboard-container {
+            padding: var(--space-8) var(--space-5);
+        }
+        
+        .filters-form {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        
+        .filters-actions {
+            grid-column: 1 / -1;
+        }
+        
+        .data-table th,
+        .data-table td {
+            padding: var(--space-3);
+            font-size: 0.875rem;
+        }
+    }
+    
+    /* Mobile landscape */
+    @media (max-width: 768px) and (orientation: landscape) {
+        .page-header {
+            padding: var(--space-4) 0;
+        }
+        
+        .page-header__title {
+            font-size: 1.5rem;
+        }
+        
+        .filters-card {
+            padding: var(--space-4);
+        }
+    }
+
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-page">
+    <div class="dashboard-container">
+        <!-- Header con acciones -->
+        <div class="page-header">
+            <h1 class="page-header__title">Gestión de Reservas</h1>
+            <div class="page-header__actions">
+                <a href="{% url 'dashboard:export_bookings_pdf' %}" class="btn-export" title="Exportar como PDF">
+                    📄 PDF
+                </a>
+                <a href="{% url 'dashboard:export_bookings_excel' %}" class="btn-export" title="Exportar como Excel">
+                    📊 Excel
+                </a>
+            </div>
+        </div>
+        
+        <!-- Navegación -->
+        <nav class="dashboard-nav">
+            <a href="{% url 'dashboard:index' %}" class="dashboard-nav__link">
+                Inicio
+            </a>
+            <a href="{% url 'dashboard:bookings' %}" class="dashboard-nav__link dashboard-nav__link--active">
+                Reservas
+            </a>
+            <a href="{% url 'dashboard:revenue' %}" class="dashboard-nav__link">
+                Ingresos
+            </a>
+            <a href="{% url 'dashboard:services' %}" class="dashboard-nav__link">
+                Servicios
+            </a>
+            <a href="{% url 'dashboard:users' %}" class="dashboard-nav__link">
+                Usuarios
+            </a>
+        </nav>
+        
+        <!-- Filtros -->
+        <div class="filters-card">
+            <form method="get" class="filters-form">
+                <div class="form-field">
+                    <label for="status" class="form-field__label">Estado</label>
+                    <select name="status" id="status" class="form-field__select">
+                        <option value="">Todos los estados</option>
+                        <option value="pending" {% if status_filter == 'pending' %}selected{% endif %}>Pendiente</option>
+                        <option value="confirmed" {% if status_filter == 'confirmed' %}selected{% endif %}>Confirmada</option>
+                        <option value="completed" {% if status_filter == 'completed' %}selected{% endif %}>Completada</option>
+                        <option value="cancelled" {% if status_filter == 'cancelled' %}selected{% endif %}>Cancelada</option>
+                    </select>
+                </div>
+                
+                <div class="form-field">
+                    <label for="service" class="form-field__label">Servicio</label>
+                    <select name="service" id="service" class="form-field__select">
+                        <option value="">Todos los servicios</option>
+                        {% for service in services %}
+                            <option value="{{ service.id }}" {% if service_filter|stringformat:"s" == service.id|stringformat:"s" %}selected{% endif %}>
+                                {{ service.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="form-field">
+                    <label for="date" class="form-field__label">Fecha</label>
+                    <input type="date" name="date" id="date" class="form-field__input" value="{{ date_filter }}">
+                </div>
+                
+                <div class="filters-actions">
+                    <button type="submit" class="btn-filter">Aplicar Filtros</button>
+                    <a href="{% url 'dashboard:bookings' %}" class="btn-clear">Limpiar</a>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Tabla de Reservas -->
+        <div class="table-card">
+            <div class="table-wrapper">
+                <table class="data-table">
+                    <thead class="data-table__header">
+                        <tr>
+                            <th>ID</th>
+                            <th>Usuario</th>
+                            <th>Servicio</th>
+                            <th>Fecha</th>
+                            <th>Hora</th>
+                            <th>Estado</th>
+                            <th>Precio</th>
+                            <th>Pagado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody class="data-table__body">
+                        {% for booking in bookings %}
+                            <tr>
+                                <td><span class="data-table__id">#{{ booking.id }}</span></td>
+                                <td>{{ booking.user.get_full_name }}</td>
+                                <td>{{ booking.service.name }}</td>
+                                <td>{{ booking.booking_date|date:"d/m/Y" }}</td>
+                                <td>{{ booking.booking_time|time:"H:i" }}</td>
+                                <td>
+                                    {% if booking.status == 'pending' %}
+                                        <span class="status-badge status-badge--warning">Pendiente</span>
+                                    {% elif booking.status == 'confirmed' %}
+                                        <span class="status-badge status-badge--info">Confirmada</span>
+                                    {% elif booking.status == 'completed' %}
+                                        <span class="status-badge status-badge--success">Completada</span>
+                                    {% elif booking.status == 'cancelled' %}
+                                        <span class="status-badge status-badge--danger">Cancelada</span>
+                                    {% endif %}
+                                </td>
+                                <td>${{ booking.total_price }}</td>
+                                <td>
+                                    {% if booking.paid %}
+                                        <span class="status-badge status-badge--success">Sí</span>
+                                    {% else %}
+                                        <span class="status-badge status-badge--danger">No</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{% url 'bookings:detail' booking.id %}" class="btn-action">
+                                        Ver Detalles
+                                    </a>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="9" class="data-table__empty">
+                                    No hay reservas que coincidan con los filtros
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
