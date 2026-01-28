@@ -12,7 +12,6 @@ def services_list(request):
     
     if category_filter:
         # ✅ Validar que la categoría existe
-        from .models import Category
         if not Category.objects.filter(id=category_filter).exists():
             category_filter = None
         else:
